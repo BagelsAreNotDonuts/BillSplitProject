@@ -15,7 +15,6 @@ export default function Dashboard() {
     //Gets the user's credit score (gets the credit score with ID 1, we don't have a login system yet obviously)
      async function getUserCreditScore() {
         try {
-        console.log("trying")
         const response = await fetch('https://second-petal-398210.ts.r.appspot.com/database', {
             method: 'POST',
             headers: {
@@ -30,8 +29,6 @@ export default function Dashboard() {
         });
             const result = await response.json();  // I'm using json() because text() makes it not work properly?
             setUserCreditScoreData(result);
-            console.log(result);
-            console.log("done");
         } catch (error) {
             console.error('Error fetching data:', error);
         }
@@ -40,11 +37,11 @@ export default function Dashboard() {
     //Loads the credit score into the usestate, etc
     useEffect(() => {
         getUserCreditScore();
-    },[]);
+    });
 
+    var testScore = userCreditScoreData;
     //Sets the user's credit score to the info drawn from the database, defaults to 5.
-    var testScore = typeof userCreditScoreData === "undefined" ? 5 : userCreditScoreData[0].score;
-    console.log(userCreditScoreData[0].score);
+    var testScore = typeof userCreditScoreData[0] !== "undefined" ? userCreditScoreData[0].score : 5;
 
     //Will be the variable counting the user's overdue payments.
     var testOverduePayment = 1;
