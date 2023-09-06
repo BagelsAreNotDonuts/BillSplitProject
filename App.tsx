@@ -6,17 +6,36 @@ import Household from './screens/Household';
 import BottomNavBar from './components/BottomNavBar';
 import Fetch from './screens/FetchDemo';
 import PushData from './screens/InsertDemo';
+import { SafeAreaView} from "react-native";
 
 const Stack = createStackNavigator();
 
+//Options to be used to change the header styling for each screen.
+const stackOptions = (headerTitle) => ({
+    title:headerTitle,
+    headerStyle:{
+        backgroundColor:"#000",
+    },
+    headerTintColor:"white",
+    headerTitleAlign:"center",
+//     cardStyle: {
+//     flex: 1,
+//     flexDirection: "column",
+//     height: "90%",
+//     width: "100%",
+//     }
+});
+
 function App() {
   return (
-    
-    <NavigationContainer>
+    <NavigationContainer style={{flex: 1, flexDirection: "column", height:"50%"}}>
       <Stack.Navigator initialRouteName="Dashboard">
-        <Stack.Screen name="Dashboard" component={Dashboard} />
-        <Stack.Screen name="History" component={History} />
-        <Stack.Screen name="Household" component={Household} />
+        <Stack.Screen name="Dashboard" component={Dashboard}
+        options={stackOptions("Dashboard")}/>
+        <Stack.Screen name="History" component={History}
+         options={stackOptions("History")}/>
+        <Stack.Screen name="Household" component={Household}
+         options={stackOptions("Household")}/>
         <Stack.Screen name="FetchDemo" component={Fetch} />
         <Stack.Screen name="InsertDemo" component={PushData} />
       </Stack.Navigator>

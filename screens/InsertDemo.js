@@ -12,7 +12,7 @@ const PushData = () => {
 
   const pushData = async () => {
     try {
-      const query = 'INSERT INTO CreditScore (score, userName) VALUES (5,\'SaberFate\');';
+      const query = 'INSERT INTO CreditScore (score, userName) VALUES (2,\'Miguel\');';
       const response = await fetch('https://deco2850.ts.r.appspot.com/database', {
         method: 'POST',
         headers: {

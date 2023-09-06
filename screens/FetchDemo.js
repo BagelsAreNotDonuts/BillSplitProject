@@ -20,7 +20,7 @@ const Fetch = () => {
           user: 'root',
           pass: '3_l6#_9%?SBqji=%',
           db_name: 'users',
-          query: 'select * from CreditScore'
+          query: 'select userName from CreditScore WHERE userID = 2'
         })
       });
       const result = await response.text();  // Use .text() instead of .json()
