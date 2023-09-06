@@ -11,16 +11,16 @@ const Fetch = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch('https://deco2850.ts.r.appspot.com/database', {
+      const response = await fetch('https://second-petal-398210.ts.r.appspot.com/database', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           user: 'root',
-          pass: '3_l6#_9%?SBqji=%',
+          pass: 'root',
           db_name: 'users',
-          query: 'select * from CreditScore'
+          query: 'select * from testTable'
         })
       });
       const result = await response.text();  // Use .text() instead of .json()

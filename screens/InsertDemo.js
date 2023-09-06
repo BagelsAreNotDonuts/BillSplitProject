@@ -12,15 +12,15 @@ const PushData = () => {
 
   const pushData = async () => {
     try {
-      const query = 'INSERT INTO CreditScore (score, userName) VALUES (5,\'SaberFate\');';
-      const response = await fetch('https://deco2850.ts.r.appspot.com/database', {
+      const query = 'INSERT INTO testTable (testId, testName) VALUES (5,\'SaberFate\');';
+      const response = await fetch('https://second-petal-398210.ts.r.appspot.com/database', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           user: 'root',
-          pass: '3_l6#_9%?SBqji=%',
+          pass: 'root',
           db_name: 'users',
           query: query
         })
