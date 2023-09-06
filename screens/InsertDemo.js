@@ -21,7 +21,7 @@ const PushData = () => {
         body: JSON.stringify({
           user: 'root',
           pass: 'root',
-          db_name: 'users',
+          db_name: 'plutus',
           query: query
         })
       });
