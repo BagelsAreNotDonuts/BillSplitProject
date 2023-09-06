@@ -20,11 +20,12 @@ const Fetch = () => {
           user: 'root',
           pass: 'root',
           db_name: 'plutus',
-          query: 'select * from testTable'
+          query: 'select score FROM CreditScore WHERE userID = 1'
         })
       });
       const result = await response.text();  // Use .text() instead of .json()
       setData(result);
+      console.log(result);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
