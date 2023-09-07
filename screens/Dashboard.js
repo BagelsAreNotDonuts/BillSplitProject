@@ -1,12 +1,10 @@
 // screens/Home.js
 import React from 'react';
-import { View, Button, StyleSheet, Dimensions, TouchableOpacity,Text} from 'react-native';
+import { View, Button, StyleSheet, Dimensions, TouchableOpacity,Text, TouchableHighlight} from 'react-native';
 import {colors, styles, colorScheme, deviceWidth, deviceHeight} from '../data/themes';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { useState, useEffect } from "react";
 
-
-console.log(deviceWidth + "TestPoop");
 
 export default function Dashboard() {
 
@@ -34,17 +32,28 @@ export default function Dashboard() {
         }
      };
 
-    //Loads the credit score into the usestate, etc
+    //Loads the credit score into the usestate, etc. To load data live, remove the , [].
     useEffect(() => {
         getUserCreditScore();
-    });
+    }, []);
 
-    var testScore = userCreditScoreData;
     //Sets the user's credit score to the info drawn from the database, defaults to 5.
     var testScore = typeof userCreditScoreData[0] !== "undefined" ? userCreditScoreData[0].score : 5;
 
     //Will be the variable counting the user's overdue payments.
     var testOverduePayment = 1;
+
+    //Will be the variable to determine whether or not the user is toggling to show what they owe/are owed
+    var toggleShowOwe = true;
+
+    //Will be the variables that determines the amounts the user needs to pay/be paid. Will have to change all these to useEffects probably.
+    var testFoodCostToPay = 35.4;
+    var testRentCostToPay = 0;
+    var testOtherCostToPay = 0;
+    var testFoodCostToBePaid = 69;
+    var testRentCostToBePaid = 0;
+    var testOtherCostToBePaid = 0;
+
 
     //Turns the credit score into a percentage to be used for the fill in the progress bar
     var creditScore = (score) => (score/5)*100;
@@ -72,6 +81,7 @@ export default function Dashboard() {
 
     };
 
+    //Component for the progress bar's number
     function ProgressbarText({score}) {
         var color = progressbarColor(score);
 
@@ -84,41 +94,131 @@ export default function Dashboard() {
         );
     };
 
+    //Component displaying the top segment of the summary section
+    function DashboardSummaryTop({toggleShowOwe}) {
+        var color = "white"
+        var sumOfToPayCosts = testFoodCostToPay + testRentCostToPay + testOtherCostToPay;
+        var sumOfToBePaidCosts = testFoodCostToBePaid + testRentCostToBePaid + testOtherCostToBePaid;
+        if (toggleShowOwe && sumOfToPayCosts > 0) {
+            color = "#FC2222";
+        } else if (sumOfToBePaidCosts > 0) {
+            color = "#3A82F6";
+        }
+
+        return (
+        <>
+            <View style = {styles.dashboardStyles.summaryTop}>
+                <Text style = {styles.dashboardStyles.costSummaryHeader}>{toggleShowOwe ? "You owe:" : "You're owed:"}</Text>
+                <Text style = {[styles.dashboardStyles.costSummaryText,{color}]}>
+                ${toggleShowOwe ? sumOfToPayCosts.toFixed(2) : sumOfToBePaidCosts.toFixed(2)}</Text>
+            </View>
+        </>
+
+        );
+    };
+
+    //Component displaying the bottom segment of the summary section
+    function DashboardSummaryBottom() {
+        return (
+        <>
+            <View style = {styles.dashboardStyles.summaryBottom}>
+                <TouchableHighlight style = {styles.dashboardStyles.viewBillsButton} onPress={()=>{}}>
+                    <Text style = {styles.dashboardStyles.viewBillsButtonText}> View my bills</Text>
+                </TouchableHighlight>
+            </View>
+        </>
+
+        );
+    };
+
+    //My inefficient and chunky implementation which could definitely be better.
+    //Component to display the money you're owed/owe for each category in the categories section
+    //toggleShowOwe determines whether or not the user wants to see owe/owed, cost category to be paid/pay is the cost variable associated to the category you're displaying
+    function CategoriesMoneyText({toggleShowOwe,costCategoryToBePaid,costCategoryToPay}) {
+
+        var color = "white";
+        //Changes the color depending on the user's toggling of the toggleShowOwe variable.
+        if (!toggleShowOwe && (costCategoryToBePaid > 0)) {
+            color = "#3A82F6";
+        } else if (costCategoryToPay > 0) {
+            color = "#FC2222";
+        }
+        return(
+            <Text style = {[styles.dashboardStyles.categoriesCostText,{color}]}>
+            {toggleShowOwe && costCategoryToPay > 0 ? "-$" : "$" }{toggleShowOwe ? costCategoryToPay.toFixed(2) : costCategoryToBePaid.toFixed(2)}</Text>
+        );
+
+    };
+
+    //Component displaying the right segment of the summary section
+    function DashboardSummaryCategories() {
+        return (
+        <>
+            <View style = {styles.dashboardStyles.summaryCategories}>
+                <View style = {styles.dashboardStyles.summaryCategoriesFoodContainer}>
+                    <Text style = {styles.dashboardStyles.categoriesHeaderText}>Food</Text>
+                    <CategoriesMoneyText toggleShowOwe={toggleShowOwe}
+                    costCategoryToBePaid = {testFoodCostToBePaid} costCategoryToPay = {testFoodCostToPay}/>
+                </View>
+                <View style = {styles.dashboardStyles.summaryCategoriesRentContainer}>
+                    <Text style = {styles.dashboardStyles.categoriesHeaderText}>Rent</Text>
+                    <CategoriesMoneyText toggleShowOwe={toggleShowOwe}
+                    costCategoryToBePaid = {testRentCostToBePaid} costCategoryToPay = {testRentCostToPay}/>
+                </View>
+                <View style = {styles.dashboardStyles.summaryCategoriesOtherContainer}>
+                    <Text style = {styles.dashboardStyles.categoriesHeaderText}>Other</Text>
+                    <CategoriesMoneyText toggleShowOwe={toggleShowOwe}
+                    costCategoryToBePaid = {testOtherCostToBePaid} costCategoryToPay = {testOtherCostToPay}/>
+                </View>
+
+            </View>
+        </>
+
+        );
+    };
+
+    //Component displaying the main user credit score progress bar
+    function DashboardSummaryCreditScore() {
+        return (
+
+        <View style = {styles.dashboardStyles.summaryCreditScore}>
+            <AnimatedCircularProgress
+            size={deviceWidth*0.45}
+            width={15}
+            fill={creditScore(testScore)}
+            rotation={0}
+            tintColor={progressbarColor(testScore,0)}
+            onAnimationComplete={() => console.log('onAnimationComplete')}
+            backgroundColor={progressbarColor(testScore,1)}>
+            {() => (
+                <>
+                    <ProgressbarText score={testScore}/>
+                    <Text style={styles.dashboardStyles.creditScoreOverdueText}>
+                        ? payment overdue
+                    </Text>
+                </>
+            )}
+            </AnimatedCircularProgress>
+        </View>
+
+        );
+    };
+
     return (
         <View style={styles.dashboardStyles.container}>
 
             <View style = {styles.dashboardStyles.summaryContainer}>
-                <View style = {styles.dashboardStyles.summaryTop}>
-                </View>
+                <DashboardSummaryTop toggleShowOwe={!toggleShowOwe}/>
 
                 <View style = {styles.dashboardStyles.summaryMiddle}>
 
-                    <View style = {styles.dashboardStyles.summaryCreditScore}>
-                        <AnimatedCircularProgress
-                        size={deviceWidth*0.4}
-                        width={13}
-                        fill={creditScore(testScore)}
-                        rotation={0}
-                        tintColor={progressbarColor(testScore,0)}
-                        onAnimationComplete={() => console.log('onAnimationComplete')}
-                        backgroundColor={progressbarColor(testScore,1)}>
-                        {() => (
-                            <>
-                                <ProgressbarText score={testScore}/>
-                                <Text style={styles.dashboardStyles.creditScoreOverdueText}>
-                                    ? payment overdue
-                                </Text>
-                            </>
-                        )}
-                        </AnimatedCircularProgress>
-                    </View>
+                    <DashboardSummaryCreditScore/>
 
-                    <View style = {styles.dashboardStyles.summaryCategories}>
-                    </View>
+                    <DashboardSummaryCategories/>
+
                 </View>
 
-                <View style = {styles.dashboardStyles.summaryBottom}>
-                </View>
+                <DashboardSummaryBottom/>
 
             </View>
 
