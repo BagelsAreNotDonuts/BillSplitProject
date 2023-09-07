@@ -1,17 +1,24 @@
 // screens/Home.js
 import React from 'react';
-import { View, Text, StyleSheet, useColorScheme } from 'react-native';
-
-
+import { View, Text, StyleSheet, TouchableOpacity, useColorScheme, Dimensions } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import NewBill from './Create/NewBill'
 
 export default function History() {
   const isDarkMode = useColorScheme() === 'dark';
+  const navigation = useNavigation();
 
   return (
     <View style={isDarkMode ? styles.darkContainer : styles.lightContainer}>
       <Text style={isDarkMode ? styles.darkText : styles.lightText}>
         Dark Mode is {isDarkMode ? 'Enabled' : 'Disabled'}
       </Text>
+      <TouchableOpacity 
+        style={styles.button} 
+        onPress={() => navigation.navigate(NewBill)}
+      >
+        <Text style={styles.buttonText}>Create new bill</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -34,5 +41,19 @@ const styles = StyleSheet.create({
   },
   darkText: {
     color: '#FFFFFF',
+  },
+  button: {
+    marginTop: 20,
+    width: Dimensions.get('window').width * 0.33,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 25, // This will make it semi-round
+    borderColor: 'blue',
+    borderWidth: 2,
+    backgroundColor: 'white',
+  },
+  buttonText: {
+    color: 'blue',
   },
 });

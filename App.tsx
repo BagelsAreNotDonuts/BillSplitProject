@@ -6,6 +6,7 @@ import Household from './screens/Household';
 import BottomNavBar from './components/BottomNavBar';
 import Fetch from './screens/FetchDemo';
 import PushData from './screens/InsertDemo';
+import NewBill from './screens/Create/NewBill'
 import { SafeAreaView} from "react-native";
 
 const Stack = createStackNavigator();
@@ -38,6 +39,7 @@ function App() {
          options={stackOptions("Household")}/>
         <Stack.Screen name="FetchDemo" component={Fetch} />
         <Stack.Screen name="InsertDemo" component={PushData} />
+        <Stack.Screen name="NewBill" component={NewBill} />
       </Stack.Navigator>
       <BottomNavBar />
     </NavigationContainer>
