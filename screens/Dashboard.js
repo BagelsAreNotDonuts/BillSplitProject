@@ -32,10 +32,10 @@ export default function Dashboard() {
         }
      };
 
-    //Loads the credit score into the usestate, etc. To load data live, remove the , [].
+    //Loads the credit score into the usestate, etc. To load data live add userCreditScoreData into the [].
     useEffect(() => {
         getUserCreditScore();
-    }, []);
+    },[userCreditScoreData]);
 
     //Sets the user's credit score to the info drawn from the database, defaults to 5.
     var testScore = typeof userCreditScoreData[0] !== "undefined" ? userCreditScoreData[0].score : 5;
@@ -188,7 +188,7 @@ export default function Dashboard() {
             fill={creditScore(testScore)}
             rotation={0}
             tintColor={progressbarColor(testScore,0)}
-            onAnimationComplete={() => console.log('onAnimationComplete')}
+            //onAnimationComplete={() => console.log('onAnimationComplete')}
             backgroundColor={progressbarColor(testScore,1)}>
             {() => (
                 <>
@@ -212,7 +212,25 @@ export default function Dashboard() {
 
                 <View style = {styles.dashboardStyles.summaryMiddle}>
 
-                    <DashboardSummaryCreditScore/>
+                <View style = {styles.dashboardStyles.summaryCreditScore}>
+                    <AnimatedCircularProgress
+                    size={deviceWidth*0.45}
+                    width={15}
+                    fill={creditScore(testScore)}
+                    rotation={0}
+                    tintColor={progressbarColor(testScore,0)}
+                    onAnimationComplete={() => console.log('onAnimationComplete')}
+                    backgroundColor={progressbarColor(testScore,1)}>
+                    {() => (
+                        <>
+                            <ProgressbarText score={testScore}/>
+                            <Text style={styles.dashboardStyles.creditScoreOverdueText}>
+                                ? payment overdue
+                            </Text>
+                        </>
+                    )}
+                    </AnimatedCircularProgress>
+                </View>
 
                     <DashboardSummaryCategories/>
 
