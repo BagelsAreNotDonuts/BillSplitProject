@@ -177,7 +177,7 @@ export default function Dashboard() {
         );
     };
 
-    //Component displaying the main user credit score progress bar
+    //NOT IN USE RIGHT NOW, I THINK IT CAUSES TO PROGRESS BAR TO SPAM RENDER? Component displaying the main user credit score progress bar
     function DashboardSummaryCreditScore() {
         return (
 
@@ -208,7 +208,7 @@ export default function Dashboard() {
         <View style={styles.dashboardStyles.container}>
 
             <View style = {styles.dashboardStyles.summaryContainer}>
-                <DashboardSummaryTop toggleShowOwe={!toggleShowOwe}/>
+                <DashboardSummaryTop toggleShowOwe={toggleShowOwe}/>
 
                 <View style = {styles.dashboardStyles.summaryMiddle}>
 
