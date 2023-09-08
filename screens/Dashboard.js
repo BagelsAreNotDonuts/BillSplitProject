@@ -101,17 +101,20 @@ export default function Dashboard() {
     //Will be the variables that determines the amounts the user needs to pay/be paid.
     var testFoodCostToPay = 20;
     var testRentCostToPay = 0;
-    //Goes through all the rent bills that need to be paid and sums them into the variable.
-    var rentToPay = () => {
+
+    //Goes through all the rent bills that need to be paid and sums them into the variable. Will have to adjust this to work with others later.
+    function calculateRentToPay() {
         var rentSum = 0;
         if (typeof userRentBillData[0] !== "undefined") {
-            for (const element of userRentBillData) {
-                rentSum += parseFloat(userRentBillData[element].totalCost);
+            for (let i = 0; i < userRentBillData.length; i++) {
+                rentSum += parseFloat(userRentBillData[i].totalCost);
             }
         }
         return rentSum;
     };
-    var rentToPay = typeof userRentBillData[0] !== "undefined" ? parseFloat(userRentBillData[0].totalCost) : 0;
+    var rentToPay = calculateRentToPay();
+
+    //var rentToPay = typeof userRentBillData[0] !== "undefined" ? parseFloat(userRentBillData[0].totalCost) : 0;
     var testOtherCostToPay = 0;
     var testFoodCostToBePaid = 69;
     var testRentCostToBePaid = 20;
@@ -165,6 +168,8 @@ export default function Dashboard() {
         var color = "white"
         //Sums up costs that user needs to pay
         var sumOfToPayCosts = testFoodCostToPay + rentToPay + testOtherCostToPay;
+
+        console.log(rentToPay + " THIS IS THAT RENT, BROTHER")
 
         //Sums up costs user needs to be paid
         var sumOfToBePaidCosts = testFoodCostToBePaid + testRentCostToBePaid + testOtherCostToBePaid;
