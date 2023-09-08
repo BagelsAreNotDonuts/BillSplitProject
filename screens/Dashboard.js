@@ -1,14 +1,19 @@
 // screens/Home.js
 import React from 'react';
-import { View, Button, StyleSheet, Dimensions, TouchableOpacity,Text, TouchableHighlight} from 'react-native';
+import { View, Button, StyleSheet, Dimensions, TouchableOpacity,Text, TouchableHighlight, ScrollView} from 'react-native';
 import {colors, styles, colorScheme, deviceWidth, deviceHeight} from '../data/themes';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { useState, useEffect } from "react";
 
 
+
+//NOTE USE horizontal: true FOR SCROLL VIEW
 export default function Dashboard() {
 
      const [userCreditScoreData, setUserCreditScoreData] = useState([]);
+     const [housemateCreditScoreData, setHousemateCreditScoreData] = useState([]);
+     const [userRentBillsData, setUserRentBillsData] = useState([]);
+     const [userRentBill, setUserRentBill] = useState(0);
 
     //Gets the user's credit score (gets the credit score with ID 1, we don't have a login system yet obviously)
      async function getUserCreditScore() {
@@ -28,14 +33,61 @@ export default function Dashboard() {
             const result = await response.json();  // I'm using json() because text() makes it not work properly?
             setUserCreditScoreData(result);
         } catch (error) {
-            console.error('Error fetching data:', error);
+            console.error('Error fetching data for credit stuff:', error);
         }
      };
+
+     //I should probably do all of this is one call, but right now I can't be bothered to change the code to match it, so I'm doing this.
+     async function getHousemateCreditScores() {
+             try {
+             const response = await fetch('https://second-petal-398210.ts.r.appspot.com/database', {
+                 method: 'POST',
+                 headers: {
+                     'Content-Type': 'application/json'
+                 },
+                 body: JSON.stringify({
+                     user: 'root',
+                     pass: 'root',
+                     db_name: 'plutus',
+                     query: 'select score FROM CreditScore WHERE userID != 1'
+                 })
+             });
+                 const result = await response.json();  // I'm using json() because text() makes it not work properly?
+                 setHousemateCreditScoreData(result);
+             } catch (error) {
+                 console.error('Error fetching data for housemate stuff:', error);
+             }
+          };
+    async function getUserRentBillData() {
+    try {
+         const response = await fetch('https://second-petal-398210.ts.r.appspot.com/database', {
+             method: 'POST',
+             headers: {
+                 'Content-Type': 'application/json'
+             },
+             body: JSON.stringify({
+                 user: 'root',
+                 pass: 'root',
+                 db_name: 'plutus',
+                 query: 'SELECT * FROM Bills WHERE userID = 1 AND billCat = \'Utilities\';'
+             })
+         });
+             const result = await response.json();  // I'm using json() because text() makes it not work properly?
+             setUserRentBillsData(result);
+             setUserRentBill(userRentBillsData[0].totalCost);
+         } catch (error) {
+             console.error('Error fetching data for housemate stuff:', error);
+         }
+
+    };
 
     //Loads the credit score into the usestate, etc. To load data live add userCreditScoreData into the [].
     useEffect(() => {
         getUserCreditScore();
-    },[userCreditScoreData]);
+        //getHousemateCreditScores();
+        getUserRentBillData();
+
+    },[]);
 
     //Sets the user's credit score to the info drawn from the database, defaults to 5.
     var testScore = typeof userCreditScoreData[0] !== "undefined" ? userCreditScoreData[0].score : 5;
@@ -46,13 +98,23 @@ export default function Dashboard() {
     //Will be the variable to determine whether or not the user is toggling to show what they owe/are owed
     var toggleShowOwe = true;
 
+
     //Will be the variables that determines the amounts the user needs to pay/be paid. Will have to change all these to useEffects probably.
-    var testFoodCostToPay = 35.4;
+    var testFoodCostToPay = 20;
     var testRentCostToPay = 0;
     var testOtherCostToPay = 0;
     var testFoodCostToBePaid = 69;
-    var testRentCostToBePaid = 0;
+    var testRentCostToBePaid = 20;
     var testOtherCostToBePaid = 0;
+
+    console.log(userRentBill + " USER RENT BILL");
+
+    //var pooptest = typeof userRentBills[0] !== "undefined" ? userRentBills[0].totalCost : 0;
+    //console.log(typeof userRentBills[0] !== "undefined" ? userRentBills[0].totalCost : 0);
+
+
+
+
 
 
     //Turns the credit score into a percentage to be used for the fill in the progress bar
@@ -97,7 +159,11 @@ export default function Dashboard() {
     //Component displaying the top segment of the summary section
     function DashboardSummaryTop({toggleShowOwe}) {
         var color = "white"
-        var sumOfToPayCosts = testFoodCostToPay + testRentCostToPay + testOtherCostToPay;
+        var sumOfToPayCosts = testFoodCostToPay + userRentBill + testOtherCostToPay;
+        console.log(sumOfToPayCosts + "TO PAY COSTS AHAHAHHAHAHA");
+        console.log(testFoodCostToPay);
+        console.log(userRentBill + "USER RENT BILL IN CALCULATION");
+        console.log(testOtherCostToPay);
         var sumOfToBePaidCosts = testFoodCostToBePaid + testRentCostToBePaid + testOtherCostToBePaid;
         if (toggleShowOwe && sumOfToPayCosts > 0) {
             color = "#FC2222";
@@ -219,7 +285,7 @@ export default function Dashboard() {
                     fill={creditScore(testScore)}
                     rotation={0}
                     tintColor={progressbarColor(testScore,0)}
-                    onAnimationComplete={() => console.log('onAnimationComplete')}
+                    onAnimationComplete={() => console.log('Finished user circular progress animation.')}
                     backgroundColor={progressbarColor(testScore,1)}>
                     {() => (
                         <>
