@@ -9,11 +9,11 @@ import { useState, useEffect } from "react";
 
 //NOTE USE horizontal: true FOR SCROLL VIEW
 export default function Dashboard() {
+    //-------------------------------USE STATES && EFFECTS + FETCHES ---------------------------
 
-     const [userCreditScoreData, setUserCreditScoreData] = useState([]);
-     const [housemateCreditScoreData, setHousemateCreditScoreData] = useState([]);
-     const [userRentBillsData, setUserRentBillsData] = useState([]);
-     const [userRentBill, setUserRentBill] = useState(0);
+    const [userCreditScoreData, setUserCreditScoreData] = useState([]);
+    const [housemateCreditScoreData, setHousemateCreditScoreData] = useState([]);
+    const [userRentBillData, setUserRentBillData] = useState([]);
 
     //Gets the user's credit score (gets the credit score with ID 1, we don't have a login system yet obviously)
      async function getUserCreditScore() {
@@ -73,21 +73,20 @@ export default function Dashboard() {
              })
          });
              const result = await response.json();  // I'm using json() because text() makes it not work properly?
-             setUserRentBillsData(result);
-             setUserRentBill(userRentBillsData[0].totalCost);
+             setUserRentBillData(result);
          } catch (error) {
              console.error('Error fetching data for housemate stuff:', error);
          }
 
     };
 
-    //Loads the credit score into the usestate, etc. To load data live add userCreditScoreData into the [].
+    //Loads the credit score into the usestate, etc. To load data live add the required things to update based on into the [].
     useEffect(() => {
         getUserCreditScore();
-        //getHousemateCreditScores();
         getUserRentBillData();
-
     },[]);
+
+    //---------------------------------------------VARIABLES----------------------------------------
 
     //Sets the user's credit score to the info drawn from the database, defaults to 5.
     var testScore = typeof userCreditScoreData[0] !== "undefined" ? userCreditScoreData[0].score : 5;
@@ -99,22 +98,24 @@ export default function Dashboard() {
     var toggleShowOwe = true;
 
 
-    //Will be the variables that determines the amounts the user needs to pay/be paid. Will have to change all these to useEffects probably.
+    //Will be the variables that determines the amounts the user needs to pay/be paid.
     var testFoodCostToPay = 20;
     var testRentCostToPay = 0;
+    //Goes through all the rent bills that need to be paid and sums them into the variable.
+    var rentToPay = () => {
+        var rentSum = 0;
+        if (typeof userRentBillData[0] !== "undefined") {
+            for (const element of userRentBillData) {
+                rentSum += parseFloat(userRentBillData[element].totalCost);
+            }
+        }
+        return rentSum;
+    };
+    var rentToPay = typeof userRentBillData[0] !== "undefined" ? parseFloat(userRentBillData[0].totalCost) : 0;
     var testOtherCostToPay = 0;
     var testFoodCostToBePaid = 69;
     var testRentCostToBePaid = 20;
     var testOtherCostToBePaid = 0;
-
-    console.log(userRentBill + " USER RENT BILL");
-
-    //var pooptest = typeof userRentBills[0] !== "undefined" ? userRentBills[0].totalCost : 0;
-    //console.log(typeof userRentBills[0] !== "undefined" ? userRentBills[0].totalCost : 0);
-
-
-
-
 
 
     //Turns the credit score into a percentage to be used for the fill in the progress bar
@@ -143,12 +144,14 @@ export default function Dashboard() {
 
     };
 
+    //---------------------------------------------COMPONENTS---------------------------------------
+
     //Component for the progress bar's number
     function ProgressbarText({score}) {
         var color = progressbarColor(score);
 
         return(
-        //Inline style for this because I can't be bothered to put it into themes.
+
         //Displays the credit score number fixed to one decimal point score. {testOverduePayment} payment overdue
         <Text style={[styles.dashboardStyles.creditScoreText, {color}]}>
             {score.toFixed(1)}
@@ -158,12 +161,12 @@ export default function Dashboard() {
 
     //Component displaying the top segment of the summary section
     function DashboardSummaryTop({toggleShowOwe}) {
+
         var color = "white"
-        var sumOfToPayCosts = testFoodCostToPay + userRentBill + testOtherCostToPay;
-        console.log(sumOfToPayCosts + "TO PAY COSTS AHAHAHHAHAHA");
-        console.log(testFoodCostToPay);
-        console.log(userRentBill + "USER RENT BILL IN CALCULATION");
-        console.log(testOtherCostToPay);
+        //Sums up costs that user needs to pay
+        var sumOfToPayCosts = testFoodCostToPay + rentToPay + testOtherCostToPay;
+
+        //Sums up costs user needs to be paid
         var sumOfToBePaidCosts = testFoodCostToBePaid + testRentCostToBePaid + testOtherCostToBePaid;
         if (toggleShowOwe && sumOfToPayCosts > 0) {
             color = "#FC2222";
@@ -175,7 +178,7 @@ export default function Dashboard() {
         <>
             <View style = {styles.dashboardStyles.summaryTop}>
                 <Text style = {styles.dashboardStyles.costSummaryHeader}>{toggleShowOwe ? "You owe:" : "You're owed:"}</Text>
-                <Text style = {[styles.dashboardStyles.costSummaryText,{color}]}>
+                 <Text style = {[styles.dashboardStyles.costSummaryText,{color}]}>
                 ${toggleShowOwe ? sumOfToPayCosts.toFixed(2) : sumOfToBePaidCosts.toFixed(2)}</Text>
             </View>
         </>
@@ -197,7 +200,6 @@ export default function Dashboard() {
         );
     };
 
-    //My inefficient and chunky implementation which could definitely be better.
     //Component to display the money you're owed/owe for each category in the categories section
     //toggleShowOwe determines whether or not the user wants to see owe/owed, cost category to be paid/pay is the cost variable associated to the category you're displaying
     function CategoriesMoneyText({toggleShowOwe,costCategoryToBePaid,costCategoryToPay}) {
@@ -211,7 +213,8 @@ export default function Dashboard() {
         }
         return(
             <Text style = {[styles.dashboardStyles.categoriesCostText,{color}]}>
-            {toggleShowOwe && costCategoryToPay > 0 ? "-$" : "$" }{toggleShowOwe ? costCategoryToPay.toFixed(2) : costCategoryToBePaid.toFixed(2)}</Text>
+            {toggleShowOwe && costCategoryToPay > 0 ? "-$" : "$" }
+            {toggleShowOwe ? costCategoryToPay.toFixed(2) : costCategoryToBePaid.toFixed(2)}</Text>
         );
 
     };
@@ -229,7 +232,7 @@ export default function Dashboard() {
                 <View style = {styles.dashboardStyles.summaryCategoriesRentContainer}>
                     <Text style = {styles.dashboardStyles.categoriesHeaderText}>Rent</Text>
                     <CategoriesMoneyText toggleShowOwe={toggleShowOwe}
-                    costCategoryToBePaid = {testRentCostToBePaid} costCategoryToPay = {testRentCostToPay}/>
+                    costCategoryToBePaid = {testRentCostToBePaid} costCategoryToPay = {rentToPay}/>
                 </View>
                 <View style = {styles.dashboardStyles.summaryCategoriesOtherContainer}>
                     <Text style = {styles.dashboardStyles.categoriesHeaderText}>Other</Text>
@@ -243,7 +246,7 @@ export default function Dashboard() {
         );
     };
 
-    //NOT IN USE RIGHT NOW, I THINK IT CAUSES TO PROGRESS BAR TO SPAM RENDER? Component displaying the main user credit score progress bar
+    //NOT IN USE RIGHT NOW, I THINK IT CAUSES TO PROGRESS BAR TO SPAM RENDER?
     function DashboardSummaryCreditScore() {
         return (
 
@@ -254,7 +257,6 @@ export default function Dashboard() {
             fill={creditScore(testScore)}
             rotation={0}
             tintColor={progressbarColor(testScore,0)}
-            //onAnimationComplete={() => console.log('onAnimationComplete')}
             backgroundColor={progressbarColor(testScore,1)}>
             {() => (
                 <>
@@ -272,7 +274,6 @@ export default function Dashboard() {
 
     return (
         <View style={styles.dashboardStyles.container}>
-
             <View style = {styles.dashboardStyles.summaryContainer}>
                 <DashboardSummaryTop toggleShowOwe={toggleShowOwe}/>
 
@@ -308,8 +309,9 @@ export default function Dashboard() {
 
 
             <View style = {styles.dashboardStyles.housematesContainer}>
-                <View></View>
-               </View>
+                <View>
+                </View>
+            </View>
 
         </View>
     );
