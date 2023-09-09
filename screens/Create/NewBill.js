@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, useColorScheme } from 'react-native';
+
 import magnifyGlass from '../../assets/magnifying_glass.png';
 
-export default function NewBill() {
+export default function NewBill({navigation}) {
     const isDarkMode = useColorScheme() === 'dark';
     const names = ['Todd Holland (you)', 'Robert Downey Sr.', 'Redd Johansson', 'Donald Schaw whatever'];
     const [selectedNames, setSelectedNames] = useState([]);
@@ -17,7 +18,8 @@ export default function NewBill() {
 
     const handleNext = () => {
         //here navigate to the next screen and pass the selectedNames array
-        console.log(selectedNames); // For now, just logging the selected names
+        console.log(selectedNames); //connsole log selected names
+        navigation.navigate('SelectMember', { selectedNames: selectedNames });
       };
 
   return (
