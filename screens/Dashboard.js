@@ -93,7 +93,6 @@ export default function Dashboard() {
     //Sets the user's credit score to the info drawn from the database, defaults to 5.
     var currentUserData = typeof housemateCreditScoreData[0] === "undefined" ? 0 : housemateCreditScoreData.find((entry) => entry.userID == currentUserID)
     var currentUserScore = typeof currentUserData.score === "undefined" ? 5 : currentUserData.score;
-    var currentUserOverduePayments = 0;
     //Function that returns the credit score of the inputted userID - NOT USED RIGHT NOW.
     var getHousemateScore = (id) => {
         var score = 0;
@@ -127,8 +126,8 @@ export default function Dashboard() {
 
     //----------------------------------------------------------------------------------------------
     //CALCULATES THE USER'S CREDIT SCORE AND OVERDUE RENT PAYMENTS DEPENDING ON USER DATA AND UPDATES DATABASE
-
-    if (typeof userRentBillData[0] !== "undefined" && typeof housemateCreditScoreData[0] !== "undefined") {
+    var currentUserOverduePayments = 0;
+    if (typeof housemateCreditScoreData[0] !== "undefined") {
         //console.log(userRentBillData);
         //Gets the current date and converts it into a string we are able to compare with the database's date.
         const currentDate = new Date();
@@ -153,15 +152,18 @@ export default function Dashboard() {
         });
         //console.log(currentUserOverduePayments);
         var calculatedUserScore = (5 - currentUserOverduePayments) < 0 ? 0 : (5 - currentUserOverduePayments)
-        //console.log(userCreditScore);
-        //console.log(calculatedUserScore);
+        console.log(userCreditScore);
+        console.log(calculatedUserScore);
         if (userCreditScore != calculatedUserScore) {
             console.log("Updating user credit score...");
             updateUserCreditScore(calculatedUserScore);
             setUserCreditScore(calculatedUserScore);
-
-
+            console.log(userCreditScore);
         }
+
+    } else if (userRentBillData === []) {
+        console.log("IT'S EMPTY YOU NOONGA");
+    } else {
 
     }
     //----------------------------------------------------------------------------------------------
@@ -258,7 +260,8 @@ export default function Dashboard() {
         return (
         <>
             <View style = {styles.dashboardStyles.summaryBottom}>
-                <TouchableHighlight style = {styles.dashboardStyles.viewBillsButton} onPress={()=>{}}>
+                <TouchableHighlight style = {styles.dashboardStyles.viewBillsButton} onPress={()=>{
+                }}>
                     <Text style = {styles.dashboardStyles.viewBillsButtonText}> View my bills</Text>
                 </TouchableHighlight>
             </View>
