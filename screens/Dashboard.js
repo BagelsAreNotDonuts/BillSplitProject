@@ -10,10 +10,7 @@ import { useState, useEffect } from "react";
 //NOTE USE horizontal: true FOR SCROLL VIEW
 export default function Dashboard() {
 
-    //-------------------------------DEFINES WHO THE CURRENT USER ID IS--------------------------
-    var currentUserID = 1;
-    //-------------------------------USE STATES && EFFECTS + FETCHES ---------------------------
-
+    const [currentUserID, setCurrentUserID] = useState(1)
     const [userCreditScore, setUserCreditScore] = useState(5)
     const [housemateCreditScoreData, setHousemateCreditScoreData] = useState([]);
     const [userRentBillData, setUserRentBillData] = useState([]);
@@ -89,6 +86,7 @@ export default function Dashboard() {
         getHousemateCreditScores();
         typeof currentUserData.score === "undefined" ? setUserCreditScore(5) : setUserCreditScore(currentUserData.score);
     },[]);
+    console.log(typeof housemateCreditScoreData[0] === "undefined"  ? "IT'S STILL LOADING" : housemateCreditScoreData);
 
     //--------------------------------VARIABLES AND ASSOCIATED FUNCTIONS----------------------------
 
@@ -130,8 +128,8 @@ export default function Dashboard() {
     //----------------------------------------------------------------------------------------------
     //CALCULATES THE USER'S CREDIT SCORE AND OVERDUE RENT PAYMENTS DEPENDING ON USER DATA AND UPDATES DATABASE
 
-    if (typeof userRentBillData[0] !== "undefined") {
-        console.log(userRentBillData);
+    if (typeof userRentBillData[0] !== "undefined" && typeof housemateCreditScoreData[0] !== "undefined") {
+        //console.log(userRentBillData);
         //Gets the current date and converts it into a string we are able to compare with the database's date.
         const currentDate = new Date();
         const year = currentDate.getFullYear();
@@ -144,22 +142,24 @@ export default function Dashboard() {
             var entryDate = entry.billDateTime;
             if (entryDate < formattedDate) {
               console.log(entryDate);
-              console.log(formattedDate);
-              console.log("entryDate is earlier than currentDate.");
+              //console.log(formattedDate);
+              //console.log("entryDate is earlier than currentDate.");
               currentUserOverduePayments += 1;
             } else if (formattedDate > currentDate) {
-              console.log("entryDate is later than currentDate.");
+              //console.log("entryDate is later than currentDate.");
             } else {
-              console.log("entryDate is the same as currentDate.");
+              //console.log("entryDate is the same as currentDate.");
             }
         });
-        console.log(currentUserOverduePayments);
+        //console.log(currentUserOverduePayments);
         var calculatedUserScore = (5 - currentUserOverduePayments) < 0 ? 0 : (5 - currentUserOverduePayments)
+        //console.log(userCreditScore);
+        //console.log(calculatedUserScore);
         if (userCreditScore != calculatedUserScore) {
             console.log("Updating user credit score...");
-            console.log(calculatedUserScore);
             updateUserCreditScore(calculatedUserScore);
             setUserCreditScore(calculatedUserScore);
+
 
         }
 
