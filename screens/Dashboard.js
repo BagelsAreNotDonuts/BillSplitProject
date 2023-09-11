@@ -49,7 +49,7 @@ export default function Dashboard() {
                      user: 'root',
                      pass: 'root',
                      db_name: 'plutus',
-                     query: 'select score FROM CreditScore WHERE userID != 1'
+                     query: 'select * FROM CreditScore'
                  })
              });
                  const result = await response.json();  // I'm using json() because text() makes it not work properly?
@@ -84,12 +84,24 @@ export default function Dashboard() {
     useEffect(() => {
         getUserCreditScore();
         getUserRentBillData();
+        getHousemateCreditScores();
     },[]);
 
     //---------------------------------------------VARIABLES----------------------------------------
 
+    var currentUserID = 1;
+
     //Sets the user's credit score to the info drawn from the database, defaults to 5.
     var testScore = typeof userCreditScoreData[0] !== "undefined" ? userCreditScoreData[0].score : 5;
+
+    //Function that returns the credit score of the inputted userID - NOT USED RIGHT NOW.
+    var getHousemateScore = (id) => {
+        var score = 0;
+        typeof housemateCreditScoreData === "undefined" ? [] :
+        score = housemateCreditScoreData.filter(entry => id == entry.userID)
+        return score;
+    }
+
 
     //Will be the variable counting the user's overdue payments.
     var testOverduePayment = 1;
@@ -100,7 +112,6 @@ export default function Dashboard() {
 
     //Will be the variables that determines the amounts the user needs to pay/be paid.
     var testFoodCostToPay = 20;
-    var testRentCostToPay = 0;
 
     //Goes through all the rent bills that need to be paid and sums them into the variable. Will have to adjust this to work with others later.
     function calculateRentToPay() {
@@ -113,8 +124,8 @@ export default function Dashboard() {
         return rentSum;
     };
     var rentToPay = calculateRentToPay();
-
     //var rentToPay = typeof userRentBillData[0] !== "undefined" ? parseFloat(userRentBillData[0].totalCost) : 0;
+
     var testOtherCostToPay = 0;
     var testFoodCostToBePaid = 69;
     var testRentCostToBePaid = 20;
@@ -149,14 +160,29 @@ export default function Dashboard() {
 
     //---------------------------------------------COMPONENTS---------------------------------------
 
-    //Component for the progress bar's number
+    //Component for the summary progress bar's number
     function ProgressbarText({score}) {
+        console.log(typeof score);
         var color = progressbarColor(score);
 
         return(
 
         //Displays the credit score number fixed to one decimal point score. {testOverduePayment} payment overdue
         <Text style={[styles.dashboardStyles.creditScoreText, {color}]}>
+            {score.toFixed(1)}
+        </Text>
+        );
+    };
+
+    //Component for the houseMate progress bar's number
+    function HousemateProgressbarText({score}) {
+        //console.log(typeof score);
+        var color = progressbarColor(score);
+
+        return(
+
+        //Displays the credit score number fixed to one decimal point score. {testOverduePayment} payment overdue
+        <Text style={[styles.dashboardStyles.housemateCreditScoreText, {color}]}>
             {score.toFixed(1)}
         </Text>
         );
@@ -169,7 +195,7 @@ export default function Dashboard() {
         //Sums up costs that user needs to pay
         var sumOfToPayCosts = testFoodCostToPay + rentToPay + testOtherCostToPay;
 
-        console.log(rentToPay + " THIS IS THAT RENT, BROTHER")
+        //console.log(rentToPay + " THIS IS THAT RENT, BROTHER")
 
         //Sums up costs user needs to be paid
         var sumOfToBePaidCosts = testFoodCostToBePaid + testRentCostToBePaid + testOtherCostToBePaid;
@@ -251,30 +277,52 @@ export default function Dashboard() {
         );
     };
 
-    //NOT IN USE RIGHT NOW, I THINK IT CAUSES TO PROGRESS BAR TO SPAM RENDER?
-    function DashboardSummaryCreditScore() {
+    function DashboardHousemateBar({id}) {
+        console.log(id + " ID");
+        var userData = typeof housemateCreditScoreData[0] === "undefined" ? 0 : housemateCreditScoreData.find((entry) => entry.userID == id)
+        var score = typeof userData.score === "undefined" ? 5 : userData.score;
+        var name = typeof userData.userName === "undefined" ? "Loading..." : userData.userName;
+        console.log(score + " SCORE");
+
         return (
-
-        <View style = {styles.dashboardStyles.summaryCreditScore}>
-            <AnimatedCircularProgress
-            size={deviceWidth*0.45}
-            width={15}
-            fill={creditScore(testScore)}
-            rotation={0}
-            tintColor={progressbarColor(testScore,0)}
-            backgroundColor={progressbarColor(testScore,1)}>
-            {() => (
-                <>
-                    <ProgressbarText score={testScore}/>
-                    <Text style={styles.dashboardStyles.creditScoreOverdueText}>
-                        ? payment overdue
-                    </Text>
-                </>
-            )}
-            </AnimatedCircularProgress>
-        </View>
-
+            <View styles = {styles.dashboardStyles.housemateCircularProgressBox}>
+                <AnimatedCircularProgress
+                size={deviceWidth*0.25}
+                width={7}
+                fill={creditScore(score)}
+                rotation={0}
+                tintColor={progressbarColor(score,0)}
+                onAnimationComplete={() => console.log('Finished user circular progress animation.')}
+                backgroundColor={progressbarColor(score,1)}>
+                {() => (
+                    <>
+                        <HousemateProgressbarText score = {score}/>
+                    </>
+                )}
+                </AnimatedCircularProgress>
+                <Text style = {{textAlign: "center", marginTop: 10, color: "white"}}>{name}</Text>
+            </View>
         );
+    }
+//     <View style = {styles.dashboardStyles.housemateScrollViewBox}>
+//                {typeof housemateCreditScoreData[0] === "undefined" ? <Text>Loading...</Text>
+//                : housemateCreditScoreData.map((entry) => (<DashboardHousemateBar key={entry.userID} id ={(entry.userID)}/>))}
+//                </View>
+    function DashboardHousemateScores() {
+        return(
+            <>
+            <ScrollView horizontal = {true} style = {styles.dashboardStyles.housemateScrollView}
+            contentContainerStyle={{
+                flexGrow: 1,
+                justifyContent: 'space-between'
+            }}>
+                {typeof housemateCreditScoreData[0] === "undefined" ? <Text>Loading...</Text>
+                : housemateCreditScoreData.map((entry) => (<DashboardHousemateBar key={entry.userID} id ={(entry.userID)}/>))}
+
+            </ScrollView>
+            </>
+        );
+
     };
 
     return (
@@ -314,10 +362,13 @@ export default function Dashboard() {
 
 
             <View style = {styles.dashboardStyles.housematesContainer}>
-                <View>
+                <Text style = {styles.dashboardStyles.housemateTitle}>Your household: </Text>
+                <View style = {styles.dashboardStyles.housemateScrollViewContainer}>
+                    <DashboardHousemateScores/>
                 </View>
+
             </View>
 
         </View>
-    );
+    );  //////<Text>{typeof housemateCreditScoreData === "undefined" ? "Loading..." : housemateCreditScoreData.toString() }</Text>
 }

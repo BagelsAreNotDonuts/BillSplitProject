@@ -69,6 +69,8 @@ export const styles = StyleSheet.create({
             alignItems: 'center',
             flex: 0.28,
             width: "90%",
+            //borderWidth: 1,
+            //borderColor: "green",
         },
         summaryTop: {
             //borderWidth: 1,
@@ -129,6 +131,15 @@ export const styles = StyleSheet.create({
             alignItems: "center",
             justifyContent: "center",
             includeFontPadding: false,
+
+        },
+        housemateCreditScoreText: {
+            flex: 1,
+            justifyContent: "center",
+            textAlign: "center",
+            textAlignVertical: "center",
+            fontSize: deviceWidth*0.09,
+
 
         },
         creditScoreOverdueText: {
@@ -216,9 +227,47 @@ export const styles = StyleSheet.create({
             textAlignVertical: "top",
             includeFontPadding:false
         },
-        navBar: {
+        housemateTitle: {
+            width: "100%",
+            flex: 0.10,
+            color: "#8E8E8E",
+            //borderWidth: 1,
+            //borderColor: "white",
+            textAlign: "center",
+            textAlignVertical: "center",
+            fontSize: deviceWidth*0.036,
+            paddingBottom: "4%",
+            fontWeight: 500
+        },
+        housemateCircularProgressBox: {
+            //borderWidth: 1,
+            //borderColor: "yellow",
+            flex: 1,
+            height: "100%",
+            flexDirection: "row",
+            justifyContent: "space-between",
+        },
+        housemateScrollView: {
+            //borderWidth: 1,
+            //borderColor: "red",
+            width: "100%",
 
         },
+        housemateScrollViewContainer: {
+            flex: 0.8,
+            width: "100%",
+            //borderWidth: 1,
+            //borderColor: "purple"
+        },
+        housemateNames: {
+            flex: 0.4,
+            width: "100%",
+            //borderWidth: 1,
+            //borderColor: "red",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            fontSize: deviceWidth*0.036,
+        }
     },
 
 });
