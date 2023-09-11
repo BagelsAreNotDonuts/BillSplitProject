@@ -9,36 +9,61 @@ import { useState, useEffect } from "react";
 
 //NOTE USE horizontal: true FOR SCROLL VIEW
 export default function Dashboard() {
+
+    //-------------------------------DEFINES WHO THE CURRENT USER ID IS--------------------------
+    var currentUserID = 1;
     //-------------------------------USE STATES && EFFECTS + FETCHES ---------------------------
 
-    const [userCreditScoreData, setUserCreditScoreData] = useState([]);
+    const [userCreditScore, setUserCreditScore] = useState(5)
     const [housemateCreditScoreData, setHousemateCreditScoreData] = useState([]);
     const [userRentBillData, setUserRentBillData] = useState([]);
 
-    //Gets the user's credit score (gets the credit score with ID 1, we don't have a login system yet obviously)
-     async function getUserCreditScore() {
-        try {
-        const response = await fetch('https://second-petal-398210.ts.r.appspot.com/database', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                user: 'root',
-                pass: 'root',
-                db_name: 'plutus',
-                query: 'select score FROM CreditScore WHERE userID = 1'
-            })
-        });
-            const result = await response.json();  // I'm using json() because text() makes it not work properly?
-            setUserCreditScoreData(result);
-        } catch (error) {
-            console.error('Error fetching data for credit stuff:', error);
-        }
-     };
-
-     //I should probably do all of this is one call, but right now I can't be bothered to change the code to match it, so I'm doing this.
+     //Gets all the housemate credit scores
      async function getHousemateCreditScores() {
+         try {
+         const response = await fetch('https://second-petal-398210.ts.r.appspot.com/database', {
+             method: 'POST',
+             headers: {
+                 'Content-Type': 'application/json'
+             },
+             body: JSON.stringify({
+                 user: 'root',
+                 pass: 'root',
+                 db_name: 'plutus',
+                 query: 'select * FROM CreditScore'
+             })
+         });
+             const result = await response.json();  // I'm using json() because text() makes it not work properly?
+             setHousemateCreditScoreData(result);
+         } catch (error) {
+             console.error('Error fetching data for housemate stuff:', error);
+         }
+      };
+    //Gets the user's rent bill data
+    async function getUserRentBillData() {
+    try {
+        const query = `SELECT * FROM Bills WHERE userID = ${currentUserID} AND billCat = 'Utilities';`;
+         const response = await fetch('https://second-petal-398210.ts.r.appspot.com/database', {
+             method: 'POST',
+             headers: {
+                 'Content-Type': 'application/json'
+             },
+             body: JSON.stringify({
+                 user: 'root',
+                 pass: 'root',
+                 db_name: 'plutus',
+                 query: query
+             })
+         });
+             const result = await response.json();  // I'm using json() because text() makes it not work properly?
+             setUserRentBillData(result);
+         } catch (error) {
+             console.error('Error fetching data for housemate stuff:', error);
+         }
+
+    };
+    async function updateUserCreditScore(newCreditScore) {
+            const query = `UPDATE CreditScore SET score = ${newCreditScore} WHERE userID = ${currentUserID};`
              try {
              const response = await fetch('https://second-petal-398210.ts.r.appspot.com/database', {
                  method: 'POST',
@@ -49,51 +74,28 @@ export default function Dashboard() {
                      user: 'root',
                      pass: 'root',
                      db_name: 'plutus',
-                     query: 'select * FROM CreditScore'
+                     query: query
                  })
              });
-                 const result = await response.json();  // I'm using json() because text() makes it not work properly?
-                 setHousemateCreditScoreData(result);
+                 const result = await response.json();
              } catch (error) {
                  console.error('Error fetching data for housemate stuff:', error);
              }
           };
-    async function getUserRentBillData() {
-    try {
-         const response = await fetch('https://second-petal-398210.ts.r.appspot.com/database', {
-             method: 'POST',
-             headers: {
-                 'Content-Type': 'application/json'
-             },
-             body: JSON.stringify({
-                 user: 'root',
-                 pass: 'root',
-                 db_name: 'plutus',
-                 query: 'SELECT * FROM Bills WHERE userID = 1 AND billCat = \'Utilities\';'
-             })
-         });
-             const result = await response.json();  // I'm using json() because text() makes it not work properly?
-             setUserRentBillData(result);
-         } catch (error) {
-             console.error('Error fetching data for housemate stuff:', error);
-         }
-
-    };
 
     //Loads the credit score into the usestate, etc. To load data live add the required things to update based on into the [].
     useEffect(() => {
-        getUserCreditScore();
         getUserRentBillData();
         getHousemateCreditScores();
+        typeof currentUserData.score === "undefined" ? setUserCreditScore(5) : setUserCreditScore(currentUserData.score);
     },[]);
 
-    //---------------------------------------------VARIABLES----------------------------------------
-
-    var currentUserID = 1;
+    //--------------------------------VARIABLES AND ASSOCIATED FUNCTIONS----------------------------
 
     //Sets the user's credit score to the info drawn from the database, defaults to 5.
-    var testScore = typeof userCreditScoreData[0] !== "undefined" ? userCreditScoreData[0].score : 5;
-
+    var currentUserData = typeof housemateCreditScoreData[0] === "undefined" ? 0 : housemateCreditScoreData.find((entry) => entry.userID == currentUserID)
+    var currentUserScore = typeof currentUserData.score === "undefined" ? 5 : currentUserData.score;
+    var currentUserOverduePayments = 0;
     //Function that returns the credit score of the inputted userID - NOT USED RIGHT NOW.
     var getHousemateScore = (id) => {
         var score = 0;
@@ -111,7 +113,7 @@ export default function Dashboard() {
 
 
     //Will be the variables that determines the amounts the user needs to pay/be paid.
-    var testFoodCostToPay = 20;
+    var testFoodCostToPay = 0;
 
     //Goes through all the rent bills that need to be paid and sums them into the variable. Will have to adjust this to work with others later.
     function calculateRentToPay() {
@@ -124,7 +126,45 @@ export default function Dashboard() {
         return rentSum;
     };
     var rentToPay = calculateRentToPay();
-    //var rentToPay = typeof userRentBillData[0] !== "undefined" ? parseFloat(userRentBillData[0].totalCost) : 0;
+
+    //----------------------------------------------------------------------------------------------
+    //CALCULATES THE USER'S CREDIT SCORE AND OVERDUE RENT PAYMENTS DEPENDING ON USER DATA AND UPDATES DATABASE
+
+    if (typeof userRentBillData[0] !== "undefined") {
+        console.log(userRentBillData);
+        //Gets the current date and converts it into a string we are able to compare with the database's date.
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        //Gets the month in the right string format
+        const month = (currentDate.getMonth() + 1) < 10 ? "0"+(currentDate.getMonth() + 1) : currentDate.getMonth() + 1; // Add 1 to get the correct month
+        const day = currentDate.getDate();
+        const formattedDate = `${year}/${month}/${day}`;
+
+        userRentBillData.map((entry) => {
+            var entryDate = entry.billDateTime;
+            if (entryDate < formattedDate) {
+              console.log(entryDate);
+              console.log(formattedDate);
+              console.log("entryDate is earlier than currentDate.");
+              currentUserOverduePayments += 1;
+            } else if (formattedDate > currentDate) {
+              console.log("entryDate is later than currentDate.");
+            } else {
+              console.log("entryDate is the same as currentDate.");
+            }
+        });
+        console.log(currentUserOverduePayments);
+        var calculatedUserScore = (5 - currentUserOverduePayments) < 0 ? 0 : (5 - currentUserOverduePayments)
+        if (userCreditScore != calculatedUserScore) {
+            console.log("Updating user credit score...");
+            console.log(calculatedUserScore);
+            updateUserCreditScore(calculatedUserScore);
+            setUserCreditScore(calculatedUserScore);
+
+        }
+
+    }
+    //----------------------------------------------------------------------------------------------
 
     var testOtherCostToPay = 0;
     var testFoodCostToBePaid = 69;
@@ -162,7 +202,6 @@ export default function Dashboard() {
 
     //Component for the summary progress bar's number
     function ProgressbarText({score}) {
-        console.log(typeof score);
         var color = progressbarColor(score);
 
         return(
@@ -176,7 +215,6 @@ export default function Dashboard() {
 
     //Component for the houseMate progress bar's number
     function HousemateProgressbarText({score}) {
-        //console.log(typeof score);
         var color = progressbarColor(score);
 
         return(
@@ -194,8 +232,6 @@ export default function Dashboard() {
         var color = "white"
         //Sums up costs that user needs to pay
         var sumOfToPayCosts = testFoodCostToPay + rentToPay + testOtherCostToPay;
-
-        //console.log(rentToPay + " THIS IS THAT RENT, BROTHER")
 
         //Sums up costs user needs to be paid
         var sumOfToBePaidCosts = testFoodCostToBePaid + testRentCostToBePaid + testOtherCostToBePaid;
@@ -277,12 +313,14 @@ export default function Dashboard() {
         );
     };
 
+    //The individual progress bars for the members shown in the your household section
     function DashboardHousemateBar({id}) {
-        console.log(id + " ID");
         var userData = typeof housemateCreditScoreData[0] === "undefined" ? 0 : housemateCreditScoreData.find((entry) => entry.userID == id)
         var score = typeof userData.score === "undefined" ? 5 : userData.score;
+        if (userData.userID == currentUserID) {
+            score = userCreditScore;
+        }
         var name = typeof userData.userName === "undefined" ? "Loading..." : userData.userName;
-        console.log(score + " SCORE");
 
         return (
             <View styles = {styles.dashboardStyles.housemateCircularProgressBox}>
@@ -292,7 +330,7 @@ export default function Dashboard() {
                 fill={creditScore(score)}
                 rotation={0}
                 tintColor={progressbarColor(score,0)}
-                onAnimationComplete={() => console.log('Finished user circular progress animation.')}
+                //onAnimationComplete={() => console.log('Finished user circular progress animation.')}
                 backgroundColor={progressbarColor(score,1)}>
                 {() => (
                     <>
@@ -304,10 +342,8 @@ export default function Dashboard() {
             </View>
         );
     }
-//     <View style = {styles.dashboardStyles.housemateScrollViewBox}>
-//                {typeof housemateCreditScoreData[0] === "undefined" ? <Text>Loading...</Text>
-//                : housemateCreditScoreData.map((entry) => (<DashboardHousemateBar key={entry.userID} id ={(entry.userID)}/>))}
-//                </View>
+
+    //The scroll view component within the your household section.
     function DashboardHousemateScores() {
         return(
             <>
@@ -336,16 +372,16 @@ export default function Dashboard() {
                     <AnimatedCircularProgress
                     size={deviceWidth*0.45}
                     width={15}
-                    fill={creditScore(testScore)}
+                    fill={creditScore(userCreditScore)}
                     rotation={0}
-                    tintColor={progressbarColor(testScore,0)}
-                    onAnimationComplete={() => console.log('Finished user circular progress animation.')}
-                    backgroundColor={progressbarColor(testScore,1)}>
+                    tintColor={progressbarColor(userCreditScore,0)}
+                    //onAnimationComplete={() => console.log('Finished user circular progress animation.')}
+                    backgroundColor={progressbarColor(userCreditScore,1)}>
                     {() => (
                         <>
-                            <ProgressbarText score={testScore}/>
+                            <ProgressbarText score={userCreditScore}/>
                             <Text style={styles.dashboardStyles.creditScoreOverdueText}>
-                                ? payment overdue
+                                {currentUserOverduePayments} {currentUserOverduePayments == 1 ? "payment" : "payments"} overdue
                             </Text>
                         </>
                     )}
@@ -370,5 +406,5 @@ export default function Dashboard() {
             </View>
 
         </View>
-    );  //////<Text>{typeof housemateCreditScoreData === "undefined" ? "Loading..." : housemateCreditScoreData.toString() }</Text>
+    );
 }
