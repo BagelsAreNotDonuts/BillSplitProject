@@ -17,7 +17,7 @@ export default function SelectMember({ route, navigation }) {
   const handleNext = () => {
       console.log(selectedNames);
       //uncomment line
-      // navigation.navigate('NextScreenName', { selectedNames: selectedNames });
+      navigation.navigate('SelectCost', { selectedNames: selectedNames });
   };
 
   return (
