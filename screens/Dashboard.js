@@ -4,16 +4,19 @@ import { View, Button, StyleSheet, Dimensions, TouchableOpacity,Text, TouchableH
 import {colors, styles, colorScheme, deviceWidth, deviceHeight} from '../data/themes';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { useState, useEffect } from "react";
-
+import NewBill from './Create/NewBill';
+import { useNavigation } from '@react-navigation/native';
 
 
 //NOTE USE horizontal: true FOR SCROLL VIEW
 export default function Dashboard() {
+    const navigation = useNavigation();
 
     const [currentUserID, setCurrentUserID] = useState(1)
     const [userCreditScore, setUserCreditScore] = useState(5)
     const [housemateCreditScoreData, setHousemateCreditScoreData] = useState([]);
     const [userRentBillData, setUserRentBillData] = useState([]);
+    const [refreshState, setRefreshState] = useState(false);
 
      //Gets all the housemate credit scores
      async function getHousemateCreditScores() {
@@ -85,7 +88,7 @@ export default function Dashboard() {
         getUserRentBillData();
         getHousemateCreditScores();
         typeof currentUserData.score === "undefined" ? setUserCreditScore(5) : setUserCreditScore(currentUserData.score);
-    },[]);
+    },[currentUserID,refreshState])
     console.log(typeof housemateCreditScoreData[0] === "undefined"  ? "IT'S STILL LOADING" : housemateCreditScoreData);
 
     //--------------------------------VARIABLES AND ASSOCIATED FUNCTIONS----------------------------
@@ -127,45 +130,37 @@ export default function Dashboard() {
     //----------------------------------------------------------------------------------------------
     //CALCULATES THE USER'S CREDIT SCORE AND OVERDUE RENT PAYMENTS DEPENDING ON USER DATA AND UPDATES DATABASE
     var currentUserOverduePayments = 0;
-    if (typeof housemateCreditScoreData[0] !== "undefined") {
-        //console.log(userRentBillData);
-        //Gets the current date and converts it into a string we are able to compare with the database's date.
-        const currentDate = new Date();
-        const year = currentDate.getFullYear();
-        //Gets the month in the right string format
-        const month = (currentDate.getMonth() + 1) < 10 ? "0"+(currentDate.getMonth() + 1) : currentDate.getMonth() + 1; // Add 1 to get the correct month
-        const day = currentDate.getDate();
-        const formattedDate = `${year}/${month}/${day}`;
 
-        userRentBillData.map((entry) => {
-            var entryDate = entry.billDateTime;
-            if (entryDate < formattedDate) {
-              console.log(entryDate);
-              //console.log(formattedDate);
-              //console.log("entryDate is earlier than currentDate.");
-              currentUserOverduePayments += 1;
-            } else if (formattedDate > currentDate) {
-              //console.log("entryDate is later than currentDate.");
-            } else {
-              //console.log("entryDate is the same as currentDate.");
+    async function handleOverduePayments() {
+        if (typeof housemateCreditScoreData[0] !== "undefined") {
+                console.log("Calculating overdue payments...")
+                //Gets the current date and converts it into a string we are able to compare with the database's date.
+                const currentDate = new Date();
+                const year = currentDate.getFullYear();
+                //Gets the month in the right string format
+                const month = (currentDate.getMonth() + 1) < 10 ? "0"+(currentDate.getMonth() + 1) : currentDate.getMonth() + 1; // Add 1 to get the correct month
+                const day = currentDate.getDate();
+                const formattedDate = `${year}/${month}/${day}`;
+
+                userRentBillData.map((entry) => {
+                    var entryDate = entry.billDateTime;
+                    if (entryDate < formattedDate) {
+                      console.log(entryDate);
+                      currentUserOverduePayments += 1;
+                    }
+                });
+                var calculatedUserScore = (5 - currentUserOverduePayments) < 0 ? 0 : (5 - currentUserOverduePayments)
+                if (userCreditScore != calculatedUserScore) {
+                    console.log("Updating user credit score...");
+                    updateUserCreditScore(calculatedUserScore);
+                    setUserCreditScore(calculatedUserScore);
+                }
             }
-        });
-        //console.log(currentUserOverduePayments);
-        var calculatedUserScore = (5 - currentUserOverduePayments) < 0 ? 0 : (5 - currentUserOverduePayments)
-        console.log(userCreditScore);
-        console.log(calculatedUserScore);
-        if (userCreditScore != calculatedUserScore) {
-            console.log("Updating user credit score...");
-            updateUserCreditScore(calculatedUserScore);
-            setUserCreditScore(calculatedUserScore);
-            console.log(userCreditScore);
         }
+    //Sets the overdue payments right here. I know I can maybe use a usestate to make this work
+    //better, but it's weird and not working how I want it to.
+    handleOverduePayments();
 
-    } else if (userRentBillData === []) {
-        console.log("IT'S EMPTY YOU NOONGA");
-    } else {
-
-    }
     //----------------------------------------------------------------------------------------------
 
     var testOtherCostToPay = 0;
@@ -323,7 +318,7 @@ export default function Dashboard() {
         if (userData.userID == currentUserID) {
             score = userCreditScore;
         }
-        var name = typeof userData.userName === "undefined" ? "Loading..." : userData.userName;
+        var name = typeof userData.userName === "undefined" ? <Text>Loading</Text> : userData.userName;
 
         return (
             <View styles = {styles.dashboardStyles.housemateCircularProgressBox}>
@@ -331,6 +326,7 @@ export default function Dashboard() {
                 size={deviceWidth*0.25}
                 width={7}
                 fill={creditScore(score)}
+                duration={0}
                 rotation={0}
                 tintColor={progressbarColor(score,0)}
                 //onAnimationComplete={() => console.log('Finished user circular progress animation.')}
@@ -363,7 +359,7 @@ export default function Dashboard() {
         );
 
     };
-
+    console.log("-----------------------------------------------------------------------------------")
     return (
         <View style={styles.dashboardStyles.container}>
             <View style = {styles.dashboardStyles.summaryContainer}>
@@ -376,6 +372,7 @@ export default function Dashboard() {
                     size={deviceWidth*0.45}
                     width={15}
                     fill={creditScore(userCreditScore)}
+                    duration={0}
                     rotation={0}
                     tintColor={progressbarColor(userCreditScore,0)}
                     //onAnimationComplete={() => console.log('Finished user circular progress animation.')}
@@ -408,6 +405,39 @@ export default function Dashboard() {
 
             </View>
 
+
+            <View style ={styles.dashboardStyles.buttonContainer}>
+                <TouchableOpacity
+                    style={styles.dashboardStyles.createBillButton}
+                    onPress={() => navigation.navigate(NewBill)}
+                  >
+                    <Text style={styles.dashboardStyles.createBillText}>Create new bill</Text>
+                  </TouchableOpacity>
+                <TouchableOpacity style={styles.dashboardStyles.refreshButton}
+                     onPress= {async () => {
+                    //setCurrentUserID(3);
+                    setRefreshState(!refreshState);}}>
+                        <Text style= {styles.dashboardStyles.createBillText} >Refresh screen</Text>
+                </TouchableOpacity>
+            </View>
+
         </View>
     );
+
 }
+//<TouchableOpacity
+//                style={styles.dashboardStyles.createBillButton}
+//                onPress={() => navigation.navigate(NewBill)}
+//              >
+//                <Text style={styles.dashboardStyles.createBillText}>Create new bill</Text>
+//              </TouchableOpacity>
+//
+//            <TouchableOpacity style={styles.dashboardStyles.refreshButton}
+//             onPress= {async () => {
+//            //setCurrentUserID(3);
+//            setRefreshState(!refreshState);
+//
+//            }}>
+//                <Text>Press to refresh screen</Text>
+//
+//            </TouchableOpacity>

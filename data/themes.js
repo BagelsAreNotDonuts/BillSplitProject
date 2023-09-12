@@ -17,7 +17,7 @@ export const styles = StyleSheet.create({
         container: {
         flexDirection: 'row',
         justifyContent: 'space-around',
-        paddingVertical: 10,
+        paddingVertical: 17,
         },
         darkContainer: {
         backgroundColor: '#131313',
@@ -29,8 +29,8 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         },
         icon: {
-        width: 30,
-        height: 30,
+        width: 40,
+        height: 40,
         },
         label: {
         fontSize: 14,
@@ -56,26 +56,17 @@ export const styles = StyleSheet.create({
           marginTop:"5%",
           borderRadius: 10,
           alignItems: 'center',
-          flex: 0.48,
+          flex: 0.52,
           width: "90%",
           flexDirection: "column",
+          //borderWidth: 1,
+          //borderColor: "red",
 
           },
-        housematesContainer: {
-            backgroundColor: '#131313', // Set the background color here
-            padding: 10,
-            marginTop:"5%",
-            borderRadius: 10,
-            alignItems: 'center',
-            flex: 0.28,
-            width: "90%",
-            //borderWidth: 1,
-            //borderColor: "green",
-        },
         summaryTop: {
             //borderWidth: 1,
             //borderColor: "red",
-            flex: 0.25,
+            flex: 0.22,
             width: "100%",
             flexDirection: "column",
             alignItems: "center",
@@ -133,15 +124,6 @@ export const styles = StyleSheet.create({
             includeFontPadding: false,
 
         },
-        housemateCreditScoreText: {
-            flex: 1,
-            justifyContent: "center",
-            textAlign: "center",
-            textAlignVertical: "center",
-            fontSize: deviceWidth*0.09,
-
-
-        },
         creditScoreOverdueText: {
             width: "55%",
             //borderWidth: 1,
@@ -179,9 +161,9 @@ export const styles = StyleSheet.create({
         summaryBottom: {
             //borderWidth: 1,
             //borderColor: "yellow",
-            flex: 0.10,
+            flex: 0.1,
             width: "100%",
-            alignItems: "center"
+            alignItems: "center",
         },
         buttonText: {
             color: 'white', // Set the text color here
@@ -194,7 +176,7 @@ export const styles = StyleSheet.create({
             //borderWidth: 1,
             //borderColor: "blue",
             alignItems: "center",
-            justifyContent: "center"
+            justifyContent: "flex-end"
 
         },
         viewBillsButtonText: {
@@ -227,16 +209,34 @@ export const styles = StyleSheet.create({
             textAlignVertical: "top",
             includeFontPadding:false
         },
+        housematesContainer: {
+            backgroundColor: '#131313', // Set the background color here
+            padding: 10,
+            marginTop:"5%",
+            borderRadius: 10,
+            alignItems: 'center',
+            flex: 0.29,
+            width: "90%",
+            //borderWidth: 1,
+            //borderColor: "green",
+        },
+        housemateCreditScoreText: {
+            flex: 1,
+            justifyContent: "center",
+            textAlign: "center",
+            textAlignVertical: "center",
+            fontSize: deviceWidth*0.09,
+
+
+        },
         housemateTitle: {
             width: "100%",
-            flex: 0.10,
+            flex: 0.17,
             color: "#8E8E8E",
             //borderWidth: 1,
             //borderColor: "white",
             textAlign: "center",
-            textAlignVertical: "center",
             fontSize: deviceWidth*0.036,
-            paddingBottom: "4%",
             fontWeight: 500
         },
         housemateCircularProgressBox: {
@@ -254,7 +254,7 @@ export const styles = StyleSheet.create({
 
         },
         housemateScrollViewContainer: {
-            flex: 0.8,
+            flex: 0.85,
             width: "100%",
             //borderWidth: 1,
             //borderColor: "purple"
@@ -267,7 +267,40 @@ export const styles = StyleSheet.create({
             flexDirection: "row",
             justifyContent: "space-between",
             fontSize: deviceWidth*0.036,
-        }
+        },
+        buttonContainer: {
+            marginTop:"10%",
+            flex: 0.16,
+            //borderWidth: 1,
+            //borderColor: "red",
+            width: "90%",
+            flexDirection: "row",
+            justifyContent: "space-between",
+        },
+        createBillButton: {
+            flex: 0.46,
+            height: "60%",
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: 18,
+            borderColor: '#3A82F6',
+            borderWidth: 2,
+            backgroundColor: 'black',
+        },
+        refreshButton: {
+            flex: 0.46,
+            height: "60%",
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: 18,
+            borderColor: '#3A82F6',
+            borderWidth: 2,
+            backgroundColor: 'black',
+        },
+        createBillText: {
+            color: '#3A82F6',
+            fontSize: 18,
+          },
     },
 
 });
