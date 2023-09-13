@@ -105,7 +105,7 @@ export default function BillDescription({ route, navigation }) {
             onChange={onChangeTime}
           />
         )}
-        {(category && title && dateTime) && (
+        {(category && title) && (
           <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
             <Text style={styles.buttonText}>Next</Text>
           </TouchableOpacity>
