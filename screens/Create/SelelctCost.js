@@ -23,7 +23,7 @@ export default function SelectCost({ route, navigation }) {
         console.log(totalAmount, individualAmounts);
     }
       // Pass the data to the next screen
-      // navigation.navigate('NextScreenName', { totalAmount: totalAmount, ... });
+      navigation.navigate('BillDescription', { totalAmount: totalAmount, individualAmounts });
   };
   useEffect(() => {
     // Force a re-render when the color scheme changes

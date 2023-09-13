@@ -9,6 +9,7 @@ import PushData from './screens/InsertDemo';
 import NewBill from './screens/Create/NewBill'
 import SelectMember from'./screens/Create/SelectMember';
 import SelectCost from './screens/Create/SelelctCost';
+import BillDescrption from './screens/Create/BillDescription';
 import { SafeAreaView} from "react-native";
 
 const Stack = createStackNavigator();
@@ -77,6 +78,7 @@ function App() {
         <Stack.Screen name="NewBill" component={NewBill} />
         <Stack.Screen name="SelectMember" component={SelectMember} />
         <Stack.Screen name="SelectCost" component={SelectCost} />
+        <Stack.Screen name="BillDescription" component={BillDescrption} />
       </Stack.Navigator>
       <BottomNavBar />
     </NavigationContainer>
