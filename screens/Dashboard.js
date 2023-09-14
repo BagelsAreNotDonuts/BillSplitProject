@@ -405,18 +405,18 @@ export default function Dashboard() {
 
 
             <View style ={styles.dashboardStyles.buttonContainer}>
-                <TouchableOpacity
-                    style={styles.dashboardStyles.createBillButton}
-                    onPress={() => navigation.navigate(NewBill)}
-                  >
-                    <Text style={styles.dashboardStyles.createBillText}>Create new bill</Text>
-                  </TouchableOpacity>
                 <TouchableOpacity style={styles.dashboardStyles.refreshButton}
                      onPress= {async () => {
                     //setCurrentUserID(3);
                     setRefreshState(!refreshState);}}>
                         <Text style= {styles.dashboardStyles.createBillText} >Refresh screen</Text>
                 </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.dashboardStyles.createBillButton}
+                    onPress={() => navigation.navigate(NewBill)}
+                  >
+                    <Text style={styles.dashboardStyles.createBillText}>Create new bill</Text>
+                  </TouchableOpacity>
             </View>
 
         </View>
