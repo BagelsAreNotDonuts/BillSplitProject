@@ -36,13 +36,13 @@ export default function HistoryPage() {
     <ScrollView style={styles.container}>
       {bills.map((bill, index) => (
         <View key={index} style={styles.billBox}>
-          <Text>Bill ID: {bill.billID}</Text>
-          <Text>User ID: {bill.userID}</Text>
-          <Text>Total Cost: {bill.totalCost}</Text>
-          <Text>Category: {bill.billCat}</Text>
-          <Text>Title: {bill.billTitle}</Text>
-          <Text>Description: {bill.billDesc}</Text>
-          <Text>Date & Time: {bill.billDateTime}</Text>
+          <Text style = {styles.historyText}>Bill ID: {bill.billID}</Text>
+          <Text style = {styles.historyText}>User ID: {bill.userID}</Text>
+          <Text style = {styles.historyText}>Total Cost: {bill.totalCost}</Text>
+          <Text style = {styles.historyText}>Category: {bill.billCat}</Text>
+          <Text style = {styles.historyText}>Title: {bill.billTitle}</Text>
+          <Text style = {styles.historyText}>Description: {bill.billDesc}</Text>
+          <Text style = {styles.historyText}>Date & Time: {bill.billDateTime}</Text>
         </View>
       ))}
     </ScrollView>
@@ -50,16 +50,19 @@ export default function HistoryPage() {
 }
 
 const styles = StyleSheet.create({
+  historyText : {
+    color: "white",
+  },
   container: {
     flex: 1,
     padding: 10,
-    backgroundColor: '#f5f5f5'
+    backgroundColor: 'black'
   },
   billBox: {
     padding: 15,
     marginVertical: 10,
     borderRadius: 5,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#131313',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
