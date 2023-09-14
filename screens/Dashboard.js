@@ -322,7 +322,7 @@ export default function Dashboard() {
         var name = typeof userData.userName === "undefined" ? <Text>Loading</Text> : userData.userName;
 
         return (
-            <View styles = {styles.dashboardStyles.housemateCircularProgressBox}>
+            <View style = {styles.dashboardStyles.housemateCircularProgressBox}>
                 <AnimatedCircularProgress
                 size={deviceWidth*0.25}
                 width={7}
@@ -338,7 +338,7 @@ export default function Dashboard() {
                     </>
                 )}
                 </AnimatedCircularProgress>
-                <Text style = {{textAlign: "center", marginTop: 10, color: "white"}}>{name}</Text>
+                <Text style = {{textAlign: "center", marginTop: 10, color: "white"}}>{name.split(" ")[0]}</Text>
             </View>
         );
     }
@@ -348,10 +348,7 @@ export default function Dashboard() {
         return(
             <>
             <ScrollView horizontal = {true} style = {styles.dashboardStyles.housemateScrollView}
-            contentContainerStyle={{
-                flexGrow: 1,
-                justifyContent: 'space-between'
-            }}>
+            overScrollMode={"never"}>
                 {typeof housemateCreditScoreData[0] === "undefined" ? <Text>Loading...</Text>
                 : housemateCreditScoreData.map((entry) => (<DashboardHousemateBar key={entry.userID} id ={(entry.userID)}/>))}
 

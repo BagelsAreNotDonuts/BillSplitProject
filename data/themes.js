@@ -242,28 +242,28 @@ export const styles = StyleSheet.create({
         housemateCircularProgressBox: {
             //borderWidth: 1,
             //borderColor: "yellow",
-            flex: 1,
             height: "100%",
-            flexDirection: "row",
-            justifyContent: "space-between",
+            flexDirection: "column",
+            marginRight: deviceWidth*0.05,
+//            paddingLeft: "3%",
+//            paddingRight: "3%",
         },
         housemateScrollView: {
             //borderWidth: 1,
             //borderColor: "red",
-            width: "100%",
 
         },
         housemateScrollViewContainer: {
             flex: 0.85,
             width: "100%",
             //borderWidth: 1,
-            //borderColor: "purple"
+            //borderColor: "purple",
         },
         housemateNames: {
             flex: 0.4,
             width: "100%",
-            //borderWidth: 1,
-            //borderColor: "red",
+            borderWidth: 1,
+            borderColor: "red",
             flexDirection: "row",
             justifyContent: "space-between",
             fontSize: deviceWidth*0.036,
