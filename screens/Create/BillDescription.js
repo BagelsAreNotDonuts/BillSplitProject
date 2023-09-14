@@ -115,7 +115,9 @@ export default function BillDescription({ route, navigation }) {
   const onChangeTime = (event, selectedTime) => {
     setTimePickerVisible(false);
     if (selectedTime) {
-      setSelectedDate(prevDate => new Date(prevDate.getFullYear(), prevDate.getMonth(), prevDate.getDate(), selectedTime.getHours(), selectedTime.getMinutes()));
+      const updatedDateTime = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), selectedTime.getHours(), selectedTime.getMinutes());
+      setSelectedDate(updatedDateTime);  // Update the selectedDate state
+      setDateTime(updatedDateTime);  // Update the dateTime state
     }
   };
 
