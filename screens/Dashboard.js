@@ -42,7 +42,7 @@ export default function Dashboard() {
     //Gets the user's rent bill data
     async function getUserRentBillData() {
     try {
-        const query = `SELECT * FROM Bills WHERE userID = ${currentUserID} AND billCat = 'Utilities';`;
+        const query = `SELECT * FROM Bills WHERE userID = ${currentUserID} AND billCat = 'Rent';`;
          const response = await fetch('https://second-petal-398210.ts.r.appspot.com/database', {
              method: 'POST',
              headers: {
@@ -56,6 +56,7 @@ export default function Dashboard() {
              })
          });
              const result = await response.json();  // I'm using json() because text() makes it not work properly?
+             console.log('Dashboard fetch Bills', result);
              setUserRentBillData(result);
          } catch (error) {
              console.error('Error fetching data for housemate stuff:', error);

@@ -12,8 +12,8 @@ export default function BillDescription({ route, navigation }) {
   const [description, setDescription] = useState('');
   const [dateTime, setDateTime] = useState(new Date());
 
-  const handleNext = () => {
-    // Send post request here
+  const handleNext = async () => {
+    // Prepare the data
     const data = {
       totalAmount,
       individualAmounts,
@@ -22,9 +22,84 @@ export default function BillDescription({ route, navigation }) {
       description,
       dateTime
     };
-    console.log('BillDescription Console ',data);
-    // TODO: Send data to the server
+    console.log('BillDescription Console ', data);
+  
+    // Insert into Bills table
+    // using the first userID from individualAmounts as the main userID for the bill.
+    const mainUserID = Object.keys(data.individualAmounts)[0];
+    const fetchLatestBillIDQuery = `SELECT MAX(billID) as maxBillID FROM Bills;`;
+
+    let latestBillID;
+    try {
+      const response = await fetch('https://second-petal-398210.ts.r.appspot.com/database', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          user: 'root',
+          pass: 'root',
+          db_name: 'plutus',
+          query: fetchLatestBillIDQuery
+        })
+      });
+      const result = await response.json();
+      latestBillID = result[0].maxBillID || 0;  // If there's no bill yet, default to 0
+    } catch (error) {
+      console.error('Error fetching latest billID:', error);
+      return;
+    }
+    const newBillID = latestBillID + 1;
+
+    const insertBillQuery = `INSERT INTO Bills (billID, userID, totalCost, billCat, billTitle, billDesc, billDateTime) VALUES (${newBillID}, ${mainUserID}, '${data.totalAmount}', '${data.category}', '${data.title}', '${data.description}', '${data.dateTime.toISOString().slice(0, 19).replace('T', ' ')}');`;
+  
+    // Execute the query and get the billID
+    try {
+      const response = await fetch('https://second-petal-398210.ts.r.appspot.com/database', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          user: 'root',
+          pass: 'root',
+          db_name: 'plutus',
+          query: insertBillQuery
+        })
+      });
+      const result = await response.json();
+      //billID = result[0].billID;  // Assuming the response contains the ID of the inserted bill
+      console.log('result :', result[0]);
+      //console.log('billID ',billID);
+    } catch (error) {
+      console.error('Error inserting into Bills:', error);
+      return;
+    }
+  
+    // Insert into IndividualBill table
+    for (const userID in data.individualAmounts) {
+      console.log('test ind cost', {userID});
+      const amount = data.individualAmounts[userID];
+      const insertIndividualBillQuery = `INSERT INTO IndividualCosts (billID, userID, amount) VALUES (${newBillID}, ${userID}, '${amount}');`;
+  
+      const individualResponse = await fetch('https://second-petal-398210.ts.r.appspot.com/database', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          user: 'root',
+          pass: 'root',
+          db_name: 'plutus',
+          query: insertIndividualBillQuery
+        })
+      });
+      const individualResult = await individualResponse.json();
+      console.log(`Response for user ${userID}:`, individualResult);
+    }
+    navigation.navigate('History', {});
   };
+  
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
   const [isTimePickerVisible, setTimePickerVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());

@@ -1,60 +1,69 @@
-// screens/Home.js
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, useColorScheme, Dimensions } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import NewBill from './Create/NewBill'
-import {colors, styles, colorScheme, deviceWidth, deviceHeight} from '../data/themes';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 
-export default function History() {
-  const isDarkMode = useColorScheme() === 'dark';
-  const navigation = useNavigation();
+/***
+ * A demo history page
+ */
+export default function HistoryPage() {
+  const [bills, setBills] = useState([]);
+
+  useEffect(() => {
+    async function fetchBills() {
+      try {
+        const response = await fetch('https://second-petal-398210.ts.r.appspot.com/database', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            user: 'root',
+            pass: 'root',
+            db_name: 'plutus',
+            query: 'SELECT * FROM Bills'
+          })
+        });
+        const data = await response.json();
+        setBills(data);
+      } catch (error) {
+        console.error('Error fetching bills:', error);
+      }
+    }
+
+    fetchBills();
+  }, []);
 
   return (
-    <View style={isDarkMode ? styles.darkContainer : styles.lightContainer}>
-      <Text style={isDarkMode ? styles.darkText : styles.lightText}>
-        Dark Mode is {isDarkMode ? 'Enabled' : 'Disabled'}
-      </Text>
-      <TouchableOpacity 
-        style={styles.dashboardStyles.createBillButton}
-        onPress={() => navigation.navigate(NewBill)}
-      >
-        <Text style={styles.dashboardStyles.createBillText}>Create new bill</Text>
-      </TouchableOpacity>
-    </View>
+    <ScrollView style={styles.container}>
+      {bills.map((bill, index) => (
+        <View key={index} style={styles.billBox}>
+          <Text>Bill ID: {bill.billID}</Text>
+          <Text>User ID: {bill.userID}</Text>
+          <Text>Total Cost: {bill.totalCost}</Text>
+          <Text>Category: {bill.billCat}</Text>
+          <Text>Title: {bill.billTitle}</Text>
+          <Text>Description: {bill.billDesc}</Text>
+          <Text>Date & Time: {bill.billDateTime}</Text>
+        </View>
+      ))}
+    </ScrollView>
   );
 }
 
-//const styles = StyleSheet.create({
-//  lightContainer: {
-//    flex: 1,
-//    justifyContent: 'center',
-//    alignItems: 'center',
-//    backgroundColor: '#FFFFFF',
-//  },
-//  darkContainer: {
-//    flex: 1,
-//    justifyContent: 'center',
-//    alignItems: 'center',
-//    backgroundColor: '#000000',
-//  },
-//  lightText: {
-//    color: '#000000',
-//  },
-//  darkText: {
-//    color: '#FFFFFF',
-//  },
-//  button: {
-//    marginTop: 20,
-//    width: Dimensions.get('window').width * 0.33,
-//    height: 50,
-//    justifyContent: 'center',
-//    alignItems: 'center',
-//    borderRadius: 25, // This will make it semi-round
-//    borderColor: 'blue',
-//    borderWidth: 2,
-//    backgroundColor: 'white',
-//  },
-//  buttonText: {
-//    color: 'blue',
-//  },
-//});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 10,
+    backgroundColor: '#f5f5f5'
+  },
+  billBox: {
+    padding: 15,
+    marginVertical: 10,
+    borderRadius: 5,
+    backgroundColor: '#ffffff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 3
+  }
+});
