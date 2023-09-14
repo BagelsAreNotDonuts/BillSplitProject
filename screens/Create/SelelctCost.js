@@ -8,23 +8,26 @@ export default function SelectCost({ route, navigation }) {
   const [isDollar, setIsDollar] = useState(true); // Switch between $ and %
   const [individualAmounts, setIndividualAmounts] = useState({});
 
-  const handleAmountChange = (name, value) => {
-    setIndividualAmounts(prev => ({ ...prev, [name]: value }));
-  };
+  const handleAmountChange = (id, value) => {
+    setIndividualAmounts(prev => ({ ...prev, [id]: value }));
+};
 
-  const handleNext = () => {
+const handleNext = () => {
+    const amountsToSend = isDollar ? individualAmounts : {};
     if (!isDollar) {
-        const calculatedAmounts = {};
-        for (let name in individualAmounts) {
-            calculatedAmounts[name] = (parseFloat(totalAmount) * parseFloat(individualAmounts[name])) / 100;
+        for (let id in individualAmounts) {
+            amountsToSend[id] = (parseFloat(totalAmount) * parseFloat(individualAmounts[id])) / 100;
         }
-        console.log(totalAmount, calculatedAmounts);
-    } else {
-        console.log(totalAmount, individualAmounts);
     }
-      // Pass the data to the next screen
-      navigation.navigate('BillDescription', { totalAmount: totalAmount, individualAmounts });
-  };
+    console.log('SelectCost console ',totalAmount, amountsToSend);
+    // Pass the data to the next screen
+    navigation.navigate('BillDescription', {
+        totalAmount: totalAmount,
+        individualAmounts: amountsToSend,
+        userIDs: initialNames.map(item => item.id),
+        userNames: initialNames.map(item => item.name)
+    });
+};
   useEffect(() => {
     // Force a re-render when the color scheme changes
     setTotalAmount(prev => prev);
@@ -51,22 +54,21 @@ export default function SelectCost({ route, navigation }) {
                 <Text style={[isDarkMode ? styles.darkText : styles.lightText, { marginLeft: 10 }]}>{isDollar ? '$' : '%'}</Text>
             </TouchableOpacity>
         </View>
-          <View style={styles.columnsContainer}>
-            {initialNames.map((name, index) => (
-                <View key={index} style={styles.column}>
-                <View style={styles.greyCircle} />
-                <Text style={[isDarkMode ? styles.darkText : styles.lightText, styles.nameText]}>{name}</Text>
-                <TextInput 
-                    //style={[styles.amountInput],style={isDarkMode ? styles.darkText : styles.lightText}}
-                    style={[styles.amountInput, isDarkMode ? styles.darkText : styles.lightText]}
-                    keyboardType="numeric"
-                    value={individualAmounts[name] || ''}
-                    onChangeText={(value) => handleAmountChange(name, value)}
-                    placeholder={isDollar ? "$0.00" : "0.00%"}
-                />
+        <View style={styles.columnsContainer}>
+            {initialNames.map((item) => (
+                <View key={item.id} style={styles.column}>
+                    <View style={styles.greyCircle} />
+                    <Text style={[isDarkMode ? styles.darkText : styles.lightText, styles.nameText]}>{item.name}</Text>
+                    <TextInput 
+                        style={[styles.amountInput, isDarkMode ? styles.darkText : styles.lightText]}
+                        keyboardType="numeric"
+                        value={individualAmounts[item.id] || ''}
+                        onChangeText={(value) => handleAmountChange(item.id, value)}
+                        placeholder={isDollar ? "$0.00" : "0.00%"}
+                    />
                 </View>
             ))}
-            </View>
+        </View>
 
           {totalAmount && (
               <TouchableOpacity style={styles.nextButton} onPress={handleNext}>

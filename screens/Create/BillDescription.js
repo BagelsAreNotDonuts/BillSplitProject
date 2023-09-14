@@ -7,7 +7,7 @@ export default function BillDescription({ route, navigation }) {
   const isDarkMode = useColorScheme() === 'dark';
   const { totalAmount, individualAmounts } = route.params;
 
-  const [category, setCategory] = useState(null);
+  const [category, setCategory] = useState('Rent');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [dateTime, setDateTime] = useState(new Date());
@@ -22,7 +22,7 @@ export default function BillDescription({ route, navigation }) {
       description,
       dateTime
     };
-    console.log(data);
+    console.log('BillDescription Console ',data);
     // TODO: Send data to the server
   };
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
@@ -56,8 +56,8 @@ export default function BillDescription({ route, navigation }) {
         style={{ height: 50, width: '100%' }}
         onValueChange={(itemValue) => setCategory(itemValue)}
       >
-        <Picker.Item label="Food" value="Food" />
         <Picker.Item label="Rent" value="Rent" />
+        <Picker.Item label="Food" value="Food" />
         <Picker.Item label="Others" value="Others" />
       </Picker>
 
@@ -107,7 +107,7 @@ export default function BillDescription({ route, navigation }) {
         )}
         {(category && title) && (
           <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
-            <Text style={styles.buttonText}>Next</Text>
+            <Text style={styles.buttonText}>Submit</Text>
           </TouchableOpacity>
         )}
       </View>

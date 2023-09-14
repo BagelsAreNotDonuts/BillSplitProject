@@ -1,51 +1,68 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, useColorScheme } from 'react-native';
+import { useEffect } from 'react';
 
 import magnifyGlass from '../../assets/magnifying_glass.png';
 
 export default function NewBill({navigation}) {
-    const isDarkMode = useColorScheme() === 'dark';
-    const names = ['Todd Holland (you)', 'Robert Downey Sr.', 'Redd Johansson', 'Donald Schaw whatever'];
-    const [selectedNames, setSelectedNames] = useState([]);
-  
-    const handleCheckbox = (name) => {
-      if (selectedNames.includes(name)) {
-        setSelectedNames(prevNames => prevNames.filter(item => item !== name));
-      } else {
-        setSelectedNames(prevNames => [...prevNames, name]);
-      }
-    };
+  const isDarkMode = useColorScheme() === 'dark';
+  const [names, setNames] = useState([]);
+  const [selectedNames, setSelectedNames] = useState([]);
 
-    const handleNext = () => {
-        //here navigate to the next screen and pass the selectedNames array
-        console.log(selectedNames); //connsole log selected names
-        navigation.navigate('SelectMember', { selectedNames: selectedNames });
-      };
+  const fetchData = async () => {
+    try {
+      const response = await fetch('https://second-petal-398210.ts.r.appspot.com/database', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          user: 'root',
+          pass: 'root',
+          db_name: 'plutus',
+          query: 'SELECT userID, userName FROM CreditScore'
+        })
+      });
+      const result = await response.json();
+      setNames(result);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleCheckbox = (id, name) => {
+    if (selectedNames.some(item => item.id === id)) {
+      setSelectedNames(prevNames => prevNames.filter(item => item.id !== id));
+    } else {
+      setSelectedNames(prevNames => [...prevNames, {id, name}]);
+    }
+  };
+
+  const handleNext = () => {
+      console.log('NewBill Console: ',selectedNames);
+      navigation.navigate('SelectMember', { selectedNames: selectedNames });
+  };
 
   return (
     <View style={isDarkMode ? styles.darkContainer : styles.lightContainer}>
       <Text style={isDarkMode ? styles.darkText : styles.lightText}>
         1. Please select the household members involved in this bill
       </Text>
-
-      <View style={styles.searchBar}>
-        <TextInput placeholder="Search..." style={styles.searchInput} />
-        <Image source={magnifyGlass} style={styles.searchIcon} />
-      </View>
-
-      <Text style={[isDarkMode ? styles.darkText : styles.lightText, { marginBottom: 20 }]}>Household members</Text>
-
       <View style={styles.columnsContainer}>
-        {names.map((name, index) => (
-            <View key={index} style={styles.column}>
+        {names.map((item) => (
+            <View key={item.userID} style={styles.column}>
                 <View style={styles.greyCircle} />
-                <Text style={[isDarkMode ? styles.darkText : styles.lightText, styles.nameText]}>{name}</Text>
-                <TouchableOpacity onPress={() => handleCheckbox(name)} style={styles.checkbox}>
-                    {selectedNames.includes(name) && <View style={styles.checked} />}
+                <Text style={[isDarkMode ? styles.darkText : styles.lightText, styles.nameText]}>{item.userName}</Text>
+                <TouchableOpacity onPress={() => handleCheckbox(item.userID, item.userName)} style={styles.checkbox}>
+                    {selectedNames.some(selected => selected.id === item.userID) && <View style={styles.checked} />}
                 </TouchableOpacity>
             </View>
         ))}
-       </View>
+      </View>
 
       {selectedNames.length > 0 && (
       <TouchableOpacity style={styles.nextButton} onPress={handleNext}>

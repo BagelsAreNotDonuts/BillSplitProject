@@ -6,17 +6,16 @@ export default function SelectMember({ route, navigation }) {
   const initialNames = route.params.selectedNames; // Get the passed names
   const [selectedNames, setSelectedNames] = useState([]);
 
-  const handleCheckbox = (name) => {
-      if (selectedNames.includes(name)) {
-          setSelectedNames(prevNames => prevNames.filter(item => item !== name));
+  const handleCheckbox = (id, name) => {
+      if (selectedNames.some(item => item.id === id)) {
+          setSelectedNames(prevNames => prevNames.filter(item => item.id !== id));
       } else {
-          setSelectedNames(prevNames => [...prevNames, name]);
+          setSelectedNames(prevNames => [...prevNames, {id, name}]);
       }
   };
 
   const handleNext = () => {
-      console.log(selectedNames);
-      //uncomment line
+      console.log('SelectMember Console ',selectedNames);
       navigation.navigate('SelectCost', { selectedNames: selectedNames });
   };
 
@@ -27,12 +26,12 @@ export default function SelectMember({ route, navigation }) {
           </Text>
 
           <View style={styles.columnsContainer}>
-              {initialNames.map((name, index) => (
-                  <View key={index} style={styles.column}>
+              {initialNames.map((item) => (
+                  <View key={item.id} style={styles.column}>
                       <View style={styles.greyCircle} />
-                      <Text style={[isDarkMode ? styles.darkText : styles.lightText, styles.nameText]}>{name}</Text>
-                      <TouchableOpacity onPress={() => handleCheckbox(name)} style={styles.checkbox}>
-                          {selectedNames.includes(name) && <View style={styles.checked} />}
+                      <Text style={[isDarkMode ? styles.darkText : styles.lightText, styles.nameText]}>{item.name}</Text>
+                      <TouchableOpacity onPress={() => handleCheckbox(item.id, item.name)} style={styles.checkbox}>
+                          {selectedNames.some(selected => selected.id === item.id) && <View style={styles.checked} />}
                       </TouchableOpacity>
                   </View>
               ))}
@@ -46,6 +45,7 @@ export default function SelectMember({ route, navigation }) {
       </View>
   );
 }
+
 const styles = StyleSheet.create({
   lightContainer: {
     flex: 1,
