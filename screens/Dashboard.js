@@ -320,6 +320,7 @@ export default function Dashboard() {
             score = userCreditScore;
         }
         var name = typeof userData.userName === "undefined" ? <Text>Loading</Text> : userData.userName;
+        var userID = typeof userData.userID === "undefined" ? 0 : userData.userID;
 
         return (
             <View style = {styles.dashboardStyles.housemateCircularProgressBox}>
@@ -338,7 +339,9 @@ export default function Dashboard() {
                     </>
                 )}
                 </AnimatedCircularProgress>
-                <Text style = {{textAlign: "center", marginTop: 10, color: "white"}}>{name.split(" ")[0]}</Text>
+                <Text style = {{textAlign: "center", marginTop: 10, color: "white"}}>{
+                name.split(" ")[0]
+                + (userID == currentUserID ? " (you)" : "")}</Text>
             </View>
         );
     }
