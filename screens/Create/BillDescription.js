@@ -135,7 +135,7 @@ export default function BillDescription({ route, navigation }) {
       >
         <Picker.Item label="Rent" value="Rent" />
         <Picker.Item label="Food" value="Food" />
-        <Picker.Item label="Others" value="Others" />
+        <Picker.Item label="Other" value="Other" />
       </Picker>
 
         <Text style={isDarkMode ? styles.darkText : styles.lightText}>

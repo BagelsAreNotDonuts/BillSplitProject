@@ -11,6 +11,8 @@ export const colorScheme = Appearance.getColorScheme();
 export const colors = {
     iconGrey: "D0D0D0",
 };
+
+
 //Style sheet for everything
 export const styles = StyleSheet.create({
     bottomNavbarStyles : {

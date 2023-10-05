@@ -16,6 +16,8 @@ export default function Dashboard() {
     const [userCreditScore, setUserCreditScore] = useState(5)
     const [housemateCreditScoreData, setHousemateCreditScoreData] = useState([]);
     const [userRentBillData, setUserRentBillData] = useState([]);
+    const [userFoodBillData, setUserFoodBillData] = useState([]);
+    const [userOtherBillData, setUserOtherBillData] = useState([]);
     const [refreshState, setRefreshState] = useState(false);
 
      //Gets all the housemate credit scores
@@ -39,6 +41,7 @@ export default function Dashboard() {
              console.error('Error fetching data for housemate stuff:', error);
          }
       };
+    //A better way to do this is make a function that changes the query and useState set based on case, but I'm too lazy rn.
     //Gets the user's rent bill data
     async function getUserRentBillData() {
     try {
@@ -56,13 +59,64 @@ export default function Dashboard() {
              })
          });
              const result = await response.json();  // I'm using json() because text() makes it not work properly?
-             console.log('Dashboard fetch Bills', result);
+             console.log('Dashboard fetch Rent', result);
+             console.log('--------------------------------------------------------');
              setUserRentBillData(result);
          } catch (error) {
              console.error('Error fetching data for housemate stuff:', error);
          }
 
     };
+
+    async function getUserFoodBillData() {
+        try {
+            const query = `SELECT * FROM Bills WHERE userID = ${currentUserID} AND billCat = 'Food';`;
+             const response = await fetch('https://second-petal-398210.ts.r.appspot.com/database', {
+                 method: 'POST',
+                 headers: {
+                     'Content-Type': 'application/json'
+                 },
+                 body: JSON.stringify({
+                     user: 'root',
+                     pass: 'root',
+                     db_name: 'plutus',
+                     query: query
+                 })
+             });
+                 const result = await response.json();  // I'm using json() because text() makes it not work properly?
+                 console.log('Dashboard fetch Food', result);
+                 console.log('--------------------------------------------------------');
+                 setUserFoodBillData(result);
+             } catch (error) {
+                 console.error('Error fetching data for housemate stuff:', error);
+             }
+
+        };
+    async function getUserOtherBillData() {
+        try {
+            const query = `SELECT * FROM Bills WHERE userID = ${currentUserID} AND billCat = 'Other';`;
+             const response = await fetch('https://second-petal-398210.ts.r.appspot.com/database', {
+                 method: 'POST',
+                 headers: {
+                     'Content-Type': 'application/json'
+                 },
+                 body: JSON.stringify({
+                     user: 'root',
+                     pass: 'root',
+                     db_name: 'plutus',
+                     query: query
+                 })
+             });
+                 const result = await response.json();  // I'm using json() because text() makes it not work properly?
+                 console.log('Dashboard fetch Other', result);
+                 console.log('--------------------------------------------------------');
+                 setUserOtherBillData(result);
+             } catch (error) {
+                 console.error('Error fetching data for housemate stuff:', error);
+             }
+
+        };
+
     async function updateUserCreditScore(newCreditScore) {
             const query = `UPDATE CreditScore SET score = ${newCreditScore} WHERE userID = ${currentUserID};`
              try {
@@ -87,6 +141,8 @@ export default function Dashboard() {
     //Loads the credit score into the usestate, etc. To load data live add the required things to update based on into the [].
     useEffect(() => {
         getUserRentBillData();
+        getUserFoodBillData();
+        getUserOtherBillData();
         getHousemateCreditScores();
         typeof currentUserData.score === "undefined" ? setUserCreditScore(5) : setUserCreditScore(currentUserData.score);
     },[currentUserID,refreshState])
@@ -105,18 +161,11 @@ export default function Dashboard() {
         return score;
     }
 
-
-    //Will be the variable counting the user's overdue payments.
-    var testOverduePayment = 1;
-
     //Will be the variable to determine whether or not the user is toggling to show what they owe/are owed
     var toggleShowOwe = true;
 
-
-    //Will be the variables that determines the amounts the user needs to pay/be paid.
-    var testFoodCostToPay = 0;
-
     //Goes through all the rent bills that need to be paid and sums them into the variable. Will have to adjust this to work with others later.
+    //Should modularize these functions but I'm too lazy rn.
     function calculateRentToPay() {
         var rentSum = 0;
         if (typeof userRentBillData[0] !== "undefined") {
@@ -126,7 +175,34 @@ export default function Dashboard() {
         }
         return rentSum;
     };
+
+    //Should modularize these functions but I'm too lazy rn.
+    function calculateFoodToPay() {
+        var foodSum = 0;
+        if (typeof userFoodBillData[0] !== "undefined") {
+            for (let i = 0; i < userFoodBillData.length; i++) {
+                foodSum += parseFloat(userFoodBillData[i].totalCost);
+            }
+        }
+        return foodSum;
+    };
+
+    //Should modularize these functions but I'm too lazy rn.
+    function calculateOtherToPay() {
+        var otherSum = 0;
+        if (typeof userOtherBillData[0] !== "undefined") {
+            for (let i = 0; i < userOtherBillData.length; i++) {
+                otherSum += parseFloat(userOtherBillData[i].totalCost);
+            }
+        }
+        return otherSum;
+    };
+
     var rentToPay = calculateRentToPay();
+
+    var foodToPay = calculateFoodToPay();
+
+    var otherToPay = calculateOtherToPay();
 
     //----------------------------------------------------------------------------------------------
     //CALCULATES THE USER'S CREDIT SCORE AND OVERDUE RENT PAYMENTS DEPENDING ON USER DATA AND UPDATES DATABASE
@@ -143,6 +219,7 @@ export default function Dashboard() {
                 const day = currentDate.getDate();
                 const formattedDate = `${year}/${month}/${day}`;
 
+                //Can be modularized, I am too lazy :)
                 userRentBillData.map((entry) => {
                     var entryDate = entry.billDateTime;
                     if (entryDate < formattedDate) {
@@ -150,6 +227,23 @@ export default function Dashboard() {
                       currentUserOverduePayments += 1;
                     }
                 });
+
+                userOtherBillData.map((entry) => {
+                    var entryDate = entry.billDateTime;
+                    if (entryDate < formattedDate) {
+                      console.log(entryDate);
+                      currentUserOverduePayments += 1;
+                    }
+                });
+
+                userFoodBillData.map((entry) => {
+                    var entryDate = entry.billDateTime;
+                    if (entryDate < formattedDate) {
+                      console.log(entryDate);
+                      currentUserOverduePayments += 1;
+                    }
+                });
+
                 var calculatedUserScore = (5 - currentUserOverduePayments) < 0 ? 0 : (5 - currentUserOverduePayments)
                 if (userCreditScore != calculatedUserScore) {
                     console.log("Updating user credit score...");
@@ -229,7 +323,7 @@ export default function Dashboard() {
 
         var color = "white"
         //Sums up costs that user needs to pay
-        var sumOfToPayCosts = testFoodCostToPay + rentToPay + testOtherCostToPay;
+        var sumOfToPayCosts = foodToPay + rentToPay + otherToPay;
 
         //Sums up costs user needs to be paid
         var sumOfToBePaidCosts = testFoodCostToBePaid + testRentCostToBePaid + testOtherCostToBePaid;
@@ -272,9 +366,10 @@ export default function Dashboard() {
 
         var color = "white";
         //Changes the color depending on the user's toggling of the toggleShowOwe variable.
-        if (!toggleShowOwe && (costCategoryToBePaid > 0)) {
+        if (costCategoryToPay == 0) {
+        } else if (!toggleShowOwe && (costCategoryToBePaid > 0)) {
             color = "#3A82F6";
-        } else if (costCategoryToPay > 0) {
+        } else if (toggleShowOwe && costCategoryToPay > 0) {
             color = "#FC2222";
         }
         return(
@@ -293,7 +388,7 @@ export default function Dashboard() {
                 <View style = {styles.dashboardStyles.summaryCategoriesFoodContainer}>
                     <Text style = {styles.dashboardStyles.categoriesHeaderText}>Food</Text>
                     <CategoriesMoneyText toggleShowOwe={toggleShowOwe}
-                    costCategoryToBePaid = {testFoodCostToBePaid} costCategoryToPay = {testFoodCostToPay}/>
+                    costCategoryToBePaid = {testFoodCostToBePaid} costCategoryToPay = {foodToPay}/>
                 </View>
                 <View style = {styles.dashboardStyles.summaryCategoriesRentContainer}>
                     <Text style = {styles.dashboardStyles.categoriesHeaderText}>Rent</Text>
@@ -303,7 +398,7 @@ export default function Dashboard() {
                 <View style = {styles.dashboardStyles.summaryCategoriesOtherContainer}>
                     <Text style = {styles.dashboardStyles.categoriesHeaderText}>Other</Text>
                     <CategoriesMoneyText toggleShowOwe={toggleShowOwe}
-                    costCategoryToBePaid = {testOtherCostToBePaid} costCategoryToPay = {testOtherCostToPay}/>
+                    costCategoryToBePaid = {testOtherCostToBePaid} costCategoryToPay = {otherToPay}/>
                 </View>
 
             </View>
