@@ -43,6 +43,54 @@ export const styles = StyleSheet.create({
       color: '#000',
     },
   },
+  householdStyles: {
+    container: {
+      flex: 1,
+      alignItems: 'center',
+      backgroundColor: colorScheme == 'dark' ? '#000000' : '#FFFFFF',
+      flexDirection: 'column',
+    },
+    scrollviewContainer: {
+        flex: 0.8,
+        width: "90%",
+        borderWidth: 1,
+        borderColor: "red",
+        flexDirection: "column"
+    },
+    memberScrollView : {
+        flex: 0.8,
+        width: "90%",
+//        borderWidth: 1,
+//        borderColor: "yellow",
+    },
+    scrollViewItem : {
+        backgroundColor: '#131313',
+//        borderWidth: 1,
+//        borderColor: "blue",
+        height: deviceHeight*0.10,
+        width: "100%",
+        justifyContent:"center",
+        paddingLeft: "5%",
+        marginBottom: "5%",
+        borderRadius: 10
+    },
+    addNewMemberButton: {
+        flex: 0.12,
+        width: "89%",
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 10,
+        borderColor: '#3A82F6',
+        borderWidth: 2,
+        backgroundColor: 'black',
+        marginBottom: "4%",
+    },
+    addNewMemberText: {
+      color: '#3A82F6',
+      fontSize: deviceWidth * 0.038,
+    },
+
+  },
   dashboardStyles: {
     container: {
       flex: 1,
@@ -233,8 +281,8 @@ export const styles = StyleSheet.create({
       fontWeight: 500,
     },
     housemateCircularProgressBox: {
-      //borderWidth: 1,
-      //borderColor: "yellow",
+//      borderWidth: 1,
+//      borderColor: "yellow",
       height: '100%',
       flexDirection: 'column',
       marginRight: deviceWidth * 0.05,

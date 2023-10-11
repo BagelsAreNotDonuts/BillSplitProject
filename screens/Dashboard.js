@@ -28,7 +28,7 @@ import {useNavigation} from '@react-navigation/native';
 export default function Dashboard() {
   const navigation = useNavigation();
 
-  const [currentUserID, setCurrentUserID] = useState(1);
+  const [currentUserID, setCurrentUserID] = useState(3);
   const [userCreditScore, setUserCreditScore] = useState(5);
   const [housemateCreditScoreData, setHousemateCreditScoreData] = useState([]);
   const [userRentBillData, setUserRentBillData] = useState([]);
@@ -302,7 +302,7 @@ export default function Dashboard() {
   //----------------------------------------------------------------------------------------------
 
   var testOtherCostToPay = 0;
-  var testFoodCostToBePaid = 69;
+  var testFoodCostToBePaid = 60;
   var testRentCostToBePaid = 20;
   var testOtherCostToBePaid = 0;
 
@@ -416,8 +416,8 @@ export default function Dashboard() {
   }) {
     var color = 'white';
     //Changes the color depending on the user's toggling of the toggleShowOwe variable.
-    if (costCategoryToPay == 0) {
-    } else if (!toggleShowOwe && costCategoryToBePaid > 0) {
+    if (!toggleShowOwe && costCategoryToBePaid > 0) {
+      console.log(costCategoryToBePaid);
       color = '#3A82F6';
     } else if (toggleShowOwe && costCategoryToPay > 0) {
       color = '#FC2222';
