@@ -28,7 +28,7 @@ import {useNavigation} from '@react-navigation/native';
 export default function Dashboard() {
   const navigation = useNavigation();
 
-  const [currentUserID, setCurrentUserID] = useState(3);
+  const [currentUserID, setCurrentUserID] = useState(1);
   const [userCreditScore, setUserCreditScore] = useState(5);
   const [housemateCreditScoreData, setHousemateCreditScoreData] = useState([]);
   const [userRentBillData, setUserRentBillData] = useState([]);

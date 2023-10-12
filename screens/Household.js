@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import Fetch from './FetchDemo';
 import PushData from './InsertDemo';
+import AddMember from './Create/AddMember';
 import {
   View,
   Button,
@@ -28,6 +29,7 @@ export default function Household() {
     const navigation = useNavigation();
     //Use state containing the data on all the members of the household
     const [householdMembers,sethouseholdMembers] = useState([]);
+    const [refreshState,setRefreshState] = useState([false]);
     const [currentUserID, setCurrentUserID] = useState(1);
 
 
@@ -59,7 +61,7 @@ export default function Household() {
     useEffect(() => {
         getMemberData();
         console.log(householdMembers);
-    }, []);
+    }, [refreshState]);
 
     function MemberItem({id}) {
         var userData =
@@ -111,7 +113,9 @@ export default function Household() {
 
         <TouchableOpacity
           style={styles.householdStyles.addNewMemberButton}
-          onPress={() => {}}>
+          onPress={() => navigation.navigate('AddMember',{householdMembers: householdMembers
+          ,refreshState:refreshState,setRefreshState:setRefreshState})}
+          >
           <Text style={styles.householdStyles.addNewMemberText}>
             + Add new member
           </Text>

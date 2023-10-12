@@ -8,6 +8,7 @@ import BottomNavBar from './components/BottomNavBar';
 import Fetch from './screens/FetchDemo';
 import PushData from './screens/InsertDemo';
 import NewBill from './screens/Create/NewBill';
+import AddMember from './screens/Create/AddMember';
 import SelectMember from './screens/Create/SelectMember';
 import SelectCost from './screens/Create/SelelctCost';
 import BillDescrption from './screens/Create/BillDescription';
@@ -95,6 +96,8 @@ function App() {
           <Stack.Screen name="SelectMember" component={SelectMember} />
           <Stack.Screen name="SelectCost" component={SelectCost} />
           <Stack.Screen name="BillDescription" component={BillDescrption} />
+          <Stack.Screen name="AddMember" component={AddMember}
+          options={stackOptions("Add a new member")} />
         </Stack.Navigator>
         <BottomNavBar />
       </NavigationContainer>
