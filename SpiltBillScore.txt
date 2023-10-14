@@ -1,0 +1,5 @@
+1. When we delete a bill, it sends a POST query to CreditScore, changing it depending on what time the userid paid the bill, 
+if bill overdue no point.
+if bill < 2 days 5 points
+if bill < 50% increment 1 point
+ 

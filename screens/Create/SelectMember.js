@@ -31,7 +31,7 @@ export default function SelectMember({ route, navigation }) {
                       <View style={styles.greyCircle} />
                       <Text style={[isDarkMode ? styles.darkText : styles.lightText, styles.nameText]}>{item.name}</Text>
                       <TouchableOpacity onPress={() => handleCheckbox(item.id, item.name)} style={styles.checkbox}>
-                          {selectedNames.some(selected => selected.id === item.id) && <View style={styles.checked} />}
+                          {selectedNames.some(selected => selected.id === item.id) && <View style={isDarkMode? styles.checkedDark : styles.checkedLight} />}
                       </TouchableOpacity>
                   </View>
               ))}
@@ -132,11 +132,17 @@ const styles = StyleSheet.create({
   alignItems: 'center',
   justifyContent: 'center',
   },
-  checked: {
+  checkedLight: {
     width: 12,
     height: 12,
     borderRadius: 6,
-    backgroundColor: '#000', // or any color you prefer
+    backgroundColor: '#000', // Black for light mode
+  },
+  checkedDark: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: '#FFF', // White for dark mode
   },
   nextButton: {
     alignSelf: 'center',
