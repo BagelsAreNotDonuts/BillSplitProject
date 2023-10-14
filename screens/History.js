@@ -167,12 +167,6 @@ export default function HistoryPage() {
         <Text style={styles.modalText}><Text style={styles.label}>Description:</Text> {selectedBill.billDesc}</Text>
         <Text style={styles.modalText}><Text style={styles.label}>Category:</Text> {selectedBill.billCat}</Text>
         <Text style={styles.modalText}><Text style={styles.label}>Time:</Text> {new Date(selectedBill.billDateTime.replace(/\//g, '-')).toISOString().split('T')[0]}</Text>
-        <TouchableOpacity
-          style={[styles.button, styles.buttonClose]}
-          onPress={() => deleteBill(selectedBill.billID)}
-        >
-          <Text style={styles.textStyle}>Delete Bill</Text>
-        </TouchableOpacity>
       </View>
     </View>
   </Modal>
