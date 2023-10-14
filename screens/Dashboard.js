@@ -29,7 +29,7 @@ export default function Dashboard() {
   const navigation = useNavigation();
 
   const [currentUserID, setCurrentUserID] = useState(1);
-  const [userCreditScore, setUserCreditScore] = useState(5);
+  const [userCreditScore, setUserCreditScore] = useState(0);
   const [housemateCreditScoreData, setHousemateCreditScoreData] = useState([]);
   const [userRentBillData, setUserRentBillData] = useState([]);
   const [userFoodBillData, setUserFoodBillData] = useState([]);
@@ -172,9 +172,11 @@ export default function Dashboard() {
     getUserFoodBillData();
     getUserOtherBillData();
     getHousemateCreditScores();
-    typeof currentUserData.score === 'undefined'
-      ? setUserCreditScore(5)
-      : setUserCreditScore(currentUserData.score);
+
+//    typeof currentUserData.score === 'undefined'
+//      ? setUserCreditScore(0)
+//      : setUserCreditScore(currentUserData.score);
+//      console.log(userCreditScore);
   }, [currentUserID, refreshState]);
   console.log(
     typeof housemateCreditScoreData[0] === 'undefined'
@@ -190,7 +192,8 @@ export default function Dashboard() {
       ? 0
       : housemateCreditScoreData.find(entry => entry.userID == currentUserID);
   var currentUserScore =
-    typeof currentUserData.score === 'undefined' ? 5 : currentUserData.score;
+    typeof currentUserData.score === 'undefined' ? 0 : currentUserData.score;
+
   //Function that returns the credit score of the inputted userID - NOT USED RIGHT NOW.
   var getHousemateScore = id => {
     var score = 0;
@@ -286,6 +289,13 @@ export default function Dashboard() {
         }
       });
 
+//      var calculatedUserScore =
+//        5 - currentUserOverduePayments < 0 ? 0 : 5 - currentUserOverduePayments;
+//      if (userCreditScore != calculatedUserScore) {
+//        console.log('Updating user credit score...');
+//        updateUserCreditScore(calculatedUserScore);
+//        setUserCreditScore(calculatedUserScore);
+//      }
     }
   }
   //Sets the overdue payments right here. I know I can maybe use a usestate to make this work
@@ -389,7 +399,7 @@ export default function Dashboard() {
         <View style={styles.dashboardStyles.summaryBottom}>
           <TouchableHighlight
             style={styles.dashboardStyles.viewBillsButton}
-            onPress={() => navigation.navigate('My Bills')}>
+            onPress={() => {}}>
             <Text style={styles.dashboardStyles.viewBillsButtonText}>
               {' '}
               View my bills
@@ -471,9 +481,9 @@ export default function Dashboard() {
       typeof housemateCreditScoreData[0] === 'undefined'
         ? 0
         : housemateCreditScoreData.find(entry => entry.userID == id);
-    var score = typeof userData.score === 'undefined' ? 5 : userData.score;
+    var score = typeof userData.score === 'undefined' ? 0 : userData.score;
     if (userData.userID == currentUserID) {
-      score = userCreditScore;
+      score = currentUserScore;
     }
     var name =
       typeof userData.userName === 'undefined' ? (
@@ -613,15 +623,15 @@ export default function Dashboard() {
             <AnimatedCircularProgress
               size={deviceWidth * 0.45}
               width={15}
-              fill={creditScore(userCreditScore)}
+              fill={creditScore(currentUserScore)}
               duration={0}
               rotation={0}
-              tintColor={progressbarColor(userCreditScore, 0)}
+              tintColor={progressbarColor(currentUserScore, 0)}
               //onAnimationComplete={() => console.log('Finished user circular progress animation.')}
-              backgroundColor={progressbarColor(userCreditScore, 1)}>
+              backgroundColor={progressbarColor(currentUserScore, 1)}>
               {() => (
                 <>
-                  <ProgressbarText score={userCreditScore} />
+                  <ProgressbarText score={currentUserScore} />
                   <Text style={styles.dashboardStyles.creditScoreOverdueText}>
                     {currentUserOverduePayments}{' '}
                     {currentUserOverduePayments == 1 ? 'payment' : 'payments'}{' '}
@@ -669,19 +679,4 @@ export default function Dashboard() {
     </View>
   );
 }
-//<TouchableOpacity
-//                style={styles.dashboardStyles.createBillButton}
-//                onPress={() => navigation.navigate(NewBill)}
-//              >
-//                <Text style={styles.dashboardStyles.createBillText}>Create new bill</Text>
-//              </TouchableOpacity>
-//
-//            <TouchableOpacity style={styles.dashboardStyles.refreshButton}
-//             onPress= {async () => {
-//            //setCurrentUserID(3);
-//            setRefreshState(!refreshState);
-//
-//            }}>
-//                <Text>Press to refresh screen</Text>
-//
-//            </TouchableOpacity>
+

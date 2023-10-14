@@ -177,54 +177,12 @@ export default function HistoryPage() {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.markAsPaidButton}
-            onPress={() => markAsPaid(bill)}>
+            onPress={() => deleteBill(selectedBill.billID)}>
             <Text style={styles.markAsPaidText}>Mark as Paid</Text>
           </TouchableOpacity>
         </View>
       ))}
-      {selectedBill && (
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={isBillDetailModalVisible}
-          onRequestClose={() => setBillDetailModalVisible(false)}>
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={() => setBillDetailModalVisible(false)}>
-                <Text style={styles.textStyle}>X</Text>
-              </TouchableOpacity>
-              <Text style={styles.modalTitle}>{selectedBill.billTitle}</Text>
-              <Text style={styles.modalText}>
-                <Text style={styles.label}>Amount:</Text> $
-                {selectedBill.totalCost}
-              </Text>
-              <Text style={styles.modalText}>
-                <Text style={styles.label}>Description:</Text>{' '}
-                {selectedBill.billDesc}
-              </Text>
-              <Text style={styles.modalText}>
-                <Text style={styles.label}>Category:</Text>{' '}
-                {selectedBill.billCat}
-              </Text>
-              <Text style={styles.modalText}>
-                <Text style={styles.label}>Time:</Text>{' '}
-                {
-                  new Date(selectedBill.billDateTime.replace(/\//g, '-'))
-                    .toISOString()
-                    .split('T')[0]
-                }
-              </Text>
-              <TouchableOpacity
-                style={styles.markAsPaidButton}
-                onPress={() => deleteBill(selectedBill.billID)}>
-                <Text style={styles.textStyle}>Delete Bill</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
-      )}
+  
     </ScrollView>
   );
 }
@@ -291,12 +249,12 @@ const styles = StyleSheet.create({
   },
   bottomRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
   },
   cost: {
     fontSize: 14,
     color: 'white',
+    marginLeft: 10, // Add some space between the date and the cost
   },
   markAsPaidButton: {
     backgroundColor: 'green',
@@ -372,3 +330,49 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+
+/**
+ *     {selectedBill && (
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={isBillDetailModalVisible}
+          onRequestClose={() => setBillDetailModalVisible(false)}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setBillDetailModalVisible(false)}>
+                <Text style={styles.textStyle}>X</Text>
+              </TouchableOpacity>
+              <Text style={styles.modalTitle}>{selectedBill.billTitle}</Text>
+              <Text style={styles.modalText}>
+                <Text style={styles.label}>Amount:</Text> $
+                {selectedBill.totalCost}
+              </Text>
+              <Text style={styles.modalText}>
+                <Text style={styles.label}>Description:</Text>{' '}
+                {selectedBill.billDesc}
+              </Text>
+              <Text style={styles.modalText}>
+                <Text style={styles.label}>Category:</Text>{' '}
+                {selectedBill.billCat}
+              </Text>
+              <Text style={styles.modalText}>
+                <Text style={styles.label}>Time:</Text>{' '}
+                {
+                  new Date(selectedBill.billDateTime.replace(/\//g, '-'))
+                    .toISOString()
+                    .split('T')[0]
+                }
+              </Text>
+              <TouchableOpacity
+                style={styles.markAsPaidButton}
+                onPress={() => deleteBill(selectedBill.billID)}>
+                <Text style={styles.textStyle}>Delete Bill</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      )}
+ */
