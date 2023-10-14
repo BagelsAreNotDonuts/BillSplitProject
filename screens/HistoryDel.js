@@ -26,6 +26,53 @@ export default function HistoryPage() {
     setSelectedBill(bill);
     setBillDetailModalVisible(true);
   };
+  async function updateCreditScore(bill) {
+    try {
+      // Parse dates
+      const billDateTime = new Date(bill.billDateTime.replace(/\//g, '-'));
+      const billSubmittedDate = new Date(); // Assuming this is the current date/time
+      const timeDifference = billSubmittedDate - billDateTime;
+
+      // Calculate score increment based on your logic
+      let scoreIncrement = 0;
+      const twentyPercentTime =
+        billDateTime.getTime() + 0.2 * (billSubmittedDate - billDateTime);
+      const fiftyPercentTime =
+        billDateTime.getTime() + 0.5 * (billSubmittedDate - billDateTime);
+
+      if (billSubmittedDate <= twentyPercentTime) {
+        scoreIncrement = 5;
+      } else if (billSubmittedDate <= fiftyPercentTime) {
+        scoreIncrement = 3;
+      } else if (billSubmittedDate <= billDateTime) {
+        scoreIncrement = 1;
+      }
+
+      // Update CreditScore in the database
+      if (scoreIncrement > 0) {
+        const query = `UPDATE CreditScore SET score = score + ${scoreIncrement} WHERE userID = '${bill.userID}'`;
+        const response = await fetch(
+          'https://second-petal-398210.ts.r.appspot.com/database',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              user: 'root',
+              pass: 'root',
+              db_name: 'plutus',
+              query: query,
+            }),
+          },
+        );
+        const result = await response.text();
+        console.log('Update CreditScore result:', result);
+      }
+    } catch (error) {
+      console.error('Error updating CreditScore:', error);
+    }
+  }
 
   const fetchBills = async () => {
     try {
@@ -134,6 +181,15 @@ export default function HistoryPage() {
     setCurrentMonth(prev => (prev + offset) % 12);
   };
 
+  function handleMarkAsPaid(bill) {
+    console.log('Handle Mark as paid.', bill);
+    // Update credit score
+    updateCreditScore(bill);
+
+    // Delete bill
+    deleteBill(bill.billID);
+  }
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.monthNavigator}>
@@ -177,12 +233,12 @@ export default function HistoryPage() {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.markAsPaidButton}
-            onPress={() => deleteBill(selectedBill.billID)}>
+            onPress={() => handleMarkAsPaid(bill)} // Pass the bill directly
+          >
             <Text style={styles.markAsPaidText}>Mark as Paid</Text>
           </TouchableOpacity>
         </View>
       ))}
-  
     </ScrollView>
   );
 }

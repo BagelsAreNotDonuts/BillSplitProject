@@ -395,20 +395,20 @@ export default function Dashboard() {
   //Component displaying the bottom segment of the summary section
   function DashboardSummaryBottom() {
     return (
-      <>
-        <View style={styles.dashboardStyles.summaryBottom}>
-          <TouchableHighlight
-            style={styles.dashboardStyles.viewBillsButton}
-            onPress={() => {}}>
-            <Text style={styles.dashboardStyles.viewBillsButtonText}>
-              {' '}
-              View my bills
-            </Text>
-          </TouchableHighlight>
-        </View>
-      </>
+        <>
+            <View style={styles.dashboardStyles.summaryBottom}>
+                <TouchableHighlight
+                    style={styles.dashboardStyles.viewBillsButton}
+                    onPress={() => navigation.navigate('My Bills')}>
+                    <Text style={styles.dashboardStyles.viewBillsButtonText}>
+                        {' '}
+                        View my bills
+                    </Text>
+                </TouchableHighlight>
+            </View>
+        </>
     );
-  }
+}
 
   //Component to display the money you're owed/owe for each category in the categories section
   //toggleShowOwe determines whether or not the user wants to see owe/owed, cost category to be paid/pay is the cost variable associated to the category you're displaying
