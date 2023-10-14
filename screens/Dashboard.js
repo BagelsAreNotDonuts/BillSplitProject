@@ -288,6 +288,14 @@ export default function Dashboard() {
           currentUserOverduePayments += 1;
         }
       });
+
+//      var calculatedUserScore =
+//        5 - currentUserOverduePayments < 0 ? 0 : 5 - currentUserOverduePayments;
+//      if (userCreditScore != calculatedUserScore) {
+//        console.log('Updating user credit score...');
+//        updateUserCreditScore(calculatedUserScore);
+//        setUserCreditScore(calculatedUserScore);
+//      }
     }
   }
   //Sets the overdue payments right here. I know I can maybe use a usestate to make this work
@@ -391,7 +399,7 @@ export default function Dashboard() {
         <View style={styles.dashboardStyles.summaryBottom}>
           <TouchableHighlight
             style={styles.dashboardStyles.viewBillsButton}
-            onPress={() => navigation.navigate('My Bills')}>
+            onPress={() => {}}>
             <Text style={styles.dashboardStyles.viewBillsButtonText}>
               {' '}
               View my bills
@@ -671,19 +679,4 @@ export default function Dashboard() {
     </View>
   );
 }
-//<TouchableOpacity
-//                style={styles.dashboardStyles.createBillButton}
-//                onPress={() => navigation.navigate(NewBill)}
-//              >
-//                <Text style={styles.dashboardStyles.createBillText}>Create new bill</Text>
-//              </TouchableOpacity>
-//
-//            <TouchableOpacity style={styles.dashboardStyles.refreshButton}
-//             onPress= {async () => {
-//            //setCurrentUserID(3);
-//            setRefreshState(!refreshState);
-//
-//            }}>
-//                <Text>Press to refresh screen</Text>
-//
-//            </TouchableOpacity>
+
