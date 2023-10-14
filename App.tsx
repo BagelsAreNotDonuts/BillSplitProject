@@ -15,6 +15,7 @@ import BillDescrption from './screens/Create/BillDescription';
 import { SafeAreaView } from "react-native";
 import { Provider as PaperProvider } from 'react-native-paper';
 import { BillProvider } from './components/BillProvider';
+import HistoryDel from './screens/HistoryDel';
 
 
 const Stack = createStackNavigator();
@@ -72,35 +73,47 @@ function App() {
   return (
     <PaperProvider>
       <BillProvider>
-      <NavigationContainer style={{ flex: 1, flexDirection: "column", height: "50%" }}>
-        <Stack.Navigator initialRouteName="Dashboard">
-          <Stack.Screen name="Dashboard" component={Dashboard}
-            options={stackOptions("Dashboard")} />
-          <Stack.Screen
-            name="History"
-            component={History}
-            options={{
-              headerTitle: (props) => <CustomHeaderTitle {...props} />,
-              headerStyle: {
-                backgroundColor: '#000',
-              },
-              headerTintColor: 'white',
-              headerTitleAlign: 'center',
-            }}
-          />
-          <Stack.Screen name="Household" component={Household}
-            options={stackOptions("Household")} />
-          <Stack.Screen name="FetchDemo" component={Fetch} />
-          <Stack.Screen name="InsertDemo" component={PushData} />
-          <Stack.Screen name="NewBill" component={NewBill} />
-          <Stack.Screen name="SelectMember" component={SelectMember} />
-          <Stack.Screen name="SelectCost" component={SelectCost} />
-          <Stack.Screen name="BillDescription" component={BillDescrption} />
-          <Stack.Screen name="AddMember" component={AddMember}
-          options={stackOptions("Add a new member")} />
-        </Stack.Navigator>
-        <BottomNavBar />
-      </NavigationContainer>
+        <NavigationContainer style={{ flex: 1, flexDirection: "column", height: "50%" }}>
+          <Stack.Navigator initialRouteName="Dashboard">
+            <Stack.Screen name="Dashboard" component={Dashboard}
+              options={stackOptions("Dashboard")} />
+            <Stack.Screen
+              name="History"
+              component={History}
+              options={{
+                headerTitle: (props) => <CustomHeaderTitle {...props} />,
+                headerStyle: {
+                  backgroundColor: '#000',
+                },
+                headerTintColor: 'white',
+                headerTitleAlign: 'center',
+              }}
+            />
+            <Stack.Screen name="Household" component={Household}
+              options={stackOptions("Household")} />
+            <Stack.Screen name="FetchDemo" component={Fetch} />
+            <Stack.Screen name="InsertDemo" component={PushData} />
+            <Stack.Screen name="NewBill" component={NewBill} />
+            <Stack.Screen name="SelectMember" component={SelectMember} />
+            <Stack.Screen name="SelectCost" component={SelectCost} />
+            <Stack.Screen name="BillDescription" component={BillDescrption} />
+            <Stack.Screen name="AddMember" component={AddMember}
+              options={stackOptions("Add a new member")} />
+            <Stack.Screen
+              name="My Bills"
+              component={HistoryDel}
+              options={{
+                headerTitle: (props) => <CustomHeaderTitle {...props} />,
+                headerStyle: {
+                  backgroundColor: '#000',
+                },
+                headerTintColor: 'white',
+                headerTitleAlign: 'center',
+              }}
+            />
+          </Stack.Navigator>
+          <BottomNavBar />
+        </NavigationContainer>
       </BillProvider>
     </PaperProvider>
   );

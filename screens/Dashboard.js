@@ -286,13 +286,6 @@ export default function Dashboard() {
         }
       });
 
-      var calculatedUserScore =
-        5 - currentUserOverduePayments < 0 ? 0 : 5 - currentUserOverduePayments;
-      if (userCreditScore != calculatedUserScore) {
-        console.log('Updating user credit score...');
-        updateUserCreditScore(calculatedUserScore);
-        setUserCreditScore(calculatedUserScore);
-      }
     }
   }
   //Sets the overdue payments right here. I know I can maybe use a usestate to make this work
@@ -396,7 +389,7 @@ export default function Dashboard() {
         <View style={styles.dashboardStyles.summaryBottom}>
           <TouchableHighlight
             style={styles.dashboardStyles.viewBillsButton}
-            onPress={() => {}}>
+            onPress={() => navigation.navigate('My Bills')}>
             <Text style={styles.dashboardStyles.viewBillsButtonText}>
               {' '}
               View my bills
