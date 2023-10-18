@@ -35,6 +35,7 @@ export default function Dashboard() {
   const [userFoodBillData, setUserFoodBillData] = useState([]);
   const [userOtherBillData, setUserOtherBillData] = useState([]);
   const [refreshState, setRefreshState] = useState(false);
+  const [toggleShowOwe, setToggleShowOwe] = useState(true);
 
   //Gets all the housemate credit scores
   async function getHousemateCreditScores() {
@@ -194,18 +195,6 @@ export default function Dashboard() {
   var currentUserScore =
     typeof currentUserData.score === 'undefined' ? 0 : currentUserData.score;
 
-  //Function that returns the credit score of the inputted userID - NOT USED RIGHT NOW.
-  var getHousemateScore = id => {
-    var score = 0;
-    typeof housemateCreditScoreData === 'undefined'
-      ? []
-      : (score = housemateCreditScoreData.filter(entry => id == entry.userID));
-    return score;
-  };
-
-  //Will be the variable to determine whether or not the user is toggling to show what they owe/are owed
-  var toggleShowOwe = true;
-
   //Goes through all the rent bills that need to be paid and sums them into the variable. Will have to adjust this to work with others later.
   //Should modularize these functions but I'm too lazy rn.
   function calculateRentToPay() {
@@ -310,47 +299,55 @@ export default function Dashboard() {
   var testOtherCostToBePaid = 0;
 
   //Turns the credit score into a percentage to be used for the fill in the progress bar
-  var creditScore = score => (score / 5) * 100;
+  var creditScore = score => (score / 100) * 100;
 
   //Returns a hex color code depending on the score
   //The variant parameter determines what opacity is used, 0 for fully opaque, 1 for ?? opacity.
-  var progressbarColor = (score, variant) => {
+  var progressbarColor = (variant, user) => {
     var colorVariant = variant !== 0 && variant !== 1 ? 0 : variant;
-    switch (score) {
-      case 5:
-        return colorVariant == 0 ? '#3A82F6' : 'rgba(58, 130, 246, 0.1)'; // Blue
-      case 4:
-        return colorVariant == 0 ? '#61BF73' : 'rgba(97, 191, 115, 0.1)'; // Green
-      case 3:
-        return colorVariant == 0 ? '#B0D766' : 'rgba(176, 215, 102, 0.1)'; // Weird yellow
-      case 2:
-        return colorVariant == 0 ? '#FFEE58' : 'rgba(255, 238, 88, 0.1)'; // Yellow
-      case 1:
-        return colorVariant == 0 ? '#FF9B17' : 'rgba(255, 155, 23, 0.1)'; // Amber
-      case 0:
-        return colorVariant == 0 ? '#FC2222' : 'rgba(252, 34, 34, 0.1)'; // Red
-      default:
-        return '#000000'; // Default to black or another color of your choice
+    if (variant == 0) {
+        return user == currentUserID ? "#5174F6" : "#6B7DAB"
+    } else if (variant == 1) {
+        return user == currentUserID ? 'rgba(81, 116, 246, 0.1)' : 'rgba(106, 125, 165, 0.1)'
     }
+    //variant 1 is background color variant
+
+        return "#5174F6";
+//    switch (score) {
+//      case 5:
+//        return colorVariant == 0 ? '#3A82F6' : 'rgba(58, 130, 246, 0.1)'; // Blue
+//      case 4:
+//        return colorVariant == 0 ? '#61BF73' : 'rgba(97, 191, 115, 0.1)'; // Green
+//      case 3:
+//        return colorVariant == 0 ? '#B0D766' : 'rgba(176, 215, 102, 0.1)'; // Weird yellow
+//      case 2:
+//        return colorVariant == 0 ? '#FFEE58' : 'rgba(255, 238, 88, 0.1)'; // Yellow
+//      case 1:
+//        return colorVariant == 0 ? '#FF9B17' : 'rgba(255, 155, 23, 0.1)'; // Amber
+//      case 0:
+//        return colorVariant == 0 ? '#FC2222' : 'rgba(252, 34, 34, 0.1)'; // Red
+//      default:
+//        return '#000000'; // Default to black or another color of your choice
+//    }
   };
 
   //---------------------------------------------COMPONENTS---------------------------------------
 
   //Component for the summary progress bar's number
-  function ProgressbarText({score}) {
-    var color = progressbarColor(score);
+  function ProgressbarText({user}) {
+    var color = progressbarColor(0, user);
 
     return (
       //Displays the credit score number fixed to one decimal point score. {testOverduePayment} payment overdue
       <Text style={[styles.dashboardStyles.creditScoreText, {color}]}>
-        {score.toFixed(1)}
+        {currentUserScore.toFixed(1)}
       </Text>
     );
   }
 
   //Component for the houseMate progress bar's number
-  function HousemateProgressbarText({score}) {
-    var color = progressbarColor(score);
+  function HousemateProgressbarText({user,score}) {
+    var color = progressbarColor(0,user);
 
     return (
       //Displays the credit score number fixed to one decimal point score. {testOverduePayment} payment overdue
@@ -371,7 +368,7 @@ export default function Dashboard() {
       testFoodCostToBePaid + testRentCostToBePaid + testOtherCostToBePaid;
     if (toggleShowOwe && sumOfToPayCosts > 0) {
       color = '#FC2222';
-    } else if (sumOfToBePaidCosts > 0) {
+    } else if (!toggleShowOwe && sumOfToBePaidCosts > 0) {
       color = '#3A82F6';
     }
 
@@ -399,10 +396,12 @@ export default function Dashboard() {
             <View style={styles.dashboardStyles.summaryBottom}>
                 <TouchableHighlight
                     style={styles.dashboardStyles.viewBillsButton}
-                    onPress={() => navigation.navigate('My Bills')}>
+                    onPress={async () => {
+                                setRefreshState(!refreshState);
+                              }}>
                     <Text style={styles.dashboardStyles.viewBillsButtonText}>
                         {' '}
-                        View my bills
+                        Refresh screen
                     </Text>
                 </TouchableHighlight>
             </View>
@@ -501,12 +500,12 @@ export default function Dashboard() {
           fill={creditScore(score)}
           duration={0}
           rotation={0}
-          tintColor={progressbarColor(score, 0)}
+          tintColor={progressbarColor(0, userID)}
           //onAnimationComplete={() => console.log('Finished user circular progress animation.')}
-          backgroundColor={progressbarColor(score, 1)}>
+          backgroundColor={progressbarColor(1, userID)}>
           {() => (
             <>
-              <HousemateProgressbarText score={score} />
+              <HousemateProgressbarText user={userID} score={score} />
             </>
           )}
         </AnimatedCircularProgress>
@@ -539,6 +538,32 @@ export default function Dashboard() {
   const [isHelpModalVisible, setHelpModalVisible] = useState(false);
   const [isContactModalVisible, setContactModalVisible] = useState(false);
 
+  function OweToggleButton() {
+     var color = 'white';
+//    //Sums up costs that user needs to pay
+//    var sumOfToPayCosts = foodToPay + rentToPay + otherToPay;
+//
+//    //Sums up costs user needs to be paid
+//    var sumOfToBePaidCosts =
+//      testFoodCostToBePaid + testRentCostToBePaid + testOtherCostToBePaid;
+//
+//    if (toggleShowOwe && sumOfToPayCosts > 0) {
+//      color = '#FC2222';
+//    } else if (!toggleShowOwe && sumOfToBePaidCosts > 0) {
+//      color = '#3A82F6';
+//    }
+
+    return(
+        <TouchableOpacity
+        style={styles.oweToggleButton}
+        onPress={() => {setToggleShowOwe(!toggleShowOwe);
+        }}>
+            <Text style={[styles.toggleOweButtonText,{color}]}>{toggleShowOwe ? "Display Toggle: Owe" : "Display Toggle: Owed"}</Text>
+        </TouchableOpacity>
+    );
+
+  }
+
   console.log(
     '-----------------------------------------------------------------------------------',
   );
@@ -547,8 +572,10 @@ export default function Dashboard() {
       <TouchableOpacity
         style={styles.helpButton}
         onPress={() => setHelpModalVisible(true)}>
-        <Text style={styles.helpButtonText}>?</Text>
+        <Text style={styles.helpButtonText}>i</Text>
       </TouchableOpacity>
+
+      <OweToggleButton/>
 
       <Modal
         animationType="slide"
@@ -615,6 +642,8 @@ export default function Dashboard() {
         </View>
       </Modal>
 
+
+
       <View style={styles.dashboardStyles.summaryContainer}>
         <DashboardSummaryTop toggleShowOwe={toggleShowOwe} />
 
@@ -624,14 +653,15 @@ export default function Dashboard() {
               size={deviceWidth * 0.45}
               width={15}
               fill={creditScore(currentUserScore)}
+              //counterClockwise = {true};
               duration={0}
               rotation={0}
-              tintColor={progressbarColor(currentUserScore, 0)}
+              tintColor={progressbarColor(0, currentUserID)}
               //onAnimationComplete={() => console.log('Finished user circular progress animation.')}
-              backgroundColor={progressbarColor(currentUserScore, 1)}>
+              backgroundColor={progressbarColor(1, currentUserID)}>
               {() => (
                 <>
-                  <ProgressbarText score={currentUserScore} />
+                  <ProgressbarText user={currentUserID} />
                   <Text style={styles.dashboardStyles.creditScoreOverdueText}>
                     {currentUserOverduePayments}{' '}
                     {currentUserOverduePayments == 1 ? 'payment' : 'payments'}{' '}
@@ -660,12 +690,9 @@ export default function Dashboard() {
       <View style={styles.dashboardStyles.buttonContainer}>
         <TouchableOpacity
           style={styles.dashboardStyles.refreshButton}
-          onPress={async () => {
-            //setCurrentUserID(3);
-            setRefreshState(!refreshState);
-          }}>
+          onPress={() => navigation.navigate('My Bills')}>
           <Text style={styles.dashboardStyles.createBillText}>
-            Refresh screen
+            Tick off bills
           </Text>
         </TouchableOpacity>
         <TouchableOpacity

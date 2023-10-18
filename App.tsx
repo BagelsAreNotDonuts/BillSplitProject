@@ -80,14 +80,7 @@ function App() {
             <Stack.Screen
               name="History"
               component={History}
-              options={{
-                headerTitle: (props) => <CustomHeaderTitle {...props} />,
-                headerStyle: {
-                  backgroundColor: '#000',
-                },
-                headerTintColor: 'white',
-                headerTitleAlign: 'center',
-              }}
+              options={stackOptions("All Bills")}
             />
             <Stack.Screen name="Household" component={Household}
               options={stackOptions("Household")} />
@@ -102,14 +95,7 @@ function App() {
             <Stack.Screen
               name="My Bills"
               component={HistoryDel}
-              options={{
-                headerTitle: (props) => <CustomHeaderTitle {...props} />,
-                headerStyle: {
-                  backgroundColor: '#000',
-                },
-                headerTintColor: 'white',
-                headerTitleAlign: 'center',
-              }}
+              options={stackOptions("My Bills")}
             />
           </Stack.Navigator>
           <BottomNavBar />

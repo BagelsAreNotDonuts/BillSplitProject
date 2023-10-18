@@ -114,11 +114,13 @@ export const styles = StyleSheet.create({
     summaryTop: {
       //borderWidth: 1,
       //borderColor: "red",
-      flex: 0.22,
+      flex: 0.21,
       width: '100%',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
+      marginTop: "-1%",
+      paddingBottom: "2%",
     },
     costSummaryText: {
       width: '100%',
@@ -133,7 +135,7 @@ export const styles = StyleSheet.create({
       includeFontPadding: false,
     },
     costSummaryHeader: {
-      width: '100%',
+      width: '50%',
       fontWeight: 500,
       fontSize: deviceWidth * 0.042,
       color: '#8E8E8E',
@@ -217,6 +219,7 @@ export const styles = StyleSheet.create({
     viewBillsButton: {
       width: '32%',
       height: '100%',
+      marginTop: "2.5%",
       //borderWidth: 1,
       //borderColor: "blue",
       alignItems: 'center',
@@ -258,7 +261,7 @@ export const styles = StyleSheet.create({
       marginTop: '5%',
       borderRadius: 10,
       alignItems: 'center',
-      flex: 0.29,
+      flex: 0.31,
       width: '90%',
       //borderWidth: 1,
       //borderColor: "green",
@@ -345,20 +348,43 @@ export const styles = StyleSheet.create({
   // ...
   helpButton: {
     position: 'absolute',
-    top: 10,
-    left: 10,
-    backgroundColor: 'grey',
+    top: "10.5%",
+    right: "8%",
     borderRadius: 15,
-    width: 30,
-    height: 30,
+    width: 20,
+    height: 20,
     justifyContent: 'center',
     alignItems: 'center',
+    textAlignVertical:"center",
+    borderWidth: 1,
+    borderColor: "#8E8E8E",
     zIndex: 1,
   },
+  oweToggleButton: {
+      //position: 'absolute',
+      //top: "4%",
+      //left: "7%",
+      backgroundColor: "#131313",
+      //borderRadius: 4,
+      width: "100%",
+      height: "6%",
+      justifyContent: 'center',
+      alignItems: 'center',
+      textAlignVertical:"center",
+      zIndex: 1,
+//      borderTopWidth: 1,
+//      borderTopColor: "#3A82F6"
+    },
   helpButtonText: {
-    fontSize: 20,
-    color: '#000',
+    fontSize: 13,
+    fontWeight: "bold",
+    color: '#8E8E8E',
   },
+  toggleOweButtonText: {
+      fontSize: deviceWidth * 0.042,
+      fontWeight: 500,
+      color: '#8E8E8E',
+    },
   centeredView: {
     flex: 1,
     justifyContent: 'center',
@@ -367,7 +393,9 @@ export const styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    backgroundColor: 'grey',
+    backgroundColor: '#131313',
+    borderColor: "white",
+    borderWidth: 1.5,
     borderRadius: 20,
     padding: 35,
     alignItems: 'center',
@@ -382,24 +410,30 @@ export const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    //borderWidth: 1,
+    width: deviceWidth*.6,
+    justifyContent: 'space-around',
     marginBottom: 10, // or any value for vertical spacing between buttons and other elements
   },
   button: {
-    borderRadius: 20,
+    borderRadius: 15,
     padding: 10,
+    width: "40%",
     elevation: 2,
   },
   buttonClose: {
-    backgroundColor: '#2196F3',
+    backgroundColor: '#131313',
+    borderColor: "#3A82F6",
+    borderWidth: 1.5,
   },
   textStyle: {
-    color: 'white',
+    color: '#3A82F6',
     fontWeight: 'bold',
     textAlign: 'center',
   },
   modalText: {
     marginBottom: 20,
     textAlign: 'center',
+    color: "white"
   },
 });
