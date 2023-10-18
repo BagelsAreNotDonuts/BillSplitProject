@@ -340,7 +340,7 @@ export default function Dashboard() {
     return (
       //Displays the credit score number fixed to one decimal point score. {testOverduePayment} payment overdue
       <Text style={[styles.dashboardStyles.creditScoreText, {color}]}>
-        {currentUserScore.toFixed(1)}
+        {currentUserScore}
       </Text>
     );
   }
@@ -352,7 +352,7 @@ export default function Dashboard() {
     return (
       //Displays the credit score number fixed to one decimal point score. {testOverduePayment} payment overdue
       <Text style={[styles.dashboardStyles.housemateCreditScoreText, {color}]}>
-        {score.toFixed(1)}
+        {score}
       </Text>
     );
   }
