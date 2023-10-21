@@ -125,7 +125,7 @@ export default function BillDescription({ route, navigation }) {
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
     <View style={isDarkMode ? styles.darkContainer : styles.lightContainer}>
       <Text style={isDarkMode ? styles.darkText : styles.lightText}>
-        4. Please select appropriate category
+        3. Please select appropriate category
       </Text>
 
       <Picker

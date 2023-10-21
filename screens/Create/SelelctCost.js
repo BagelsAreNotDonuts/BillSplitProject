@@ -76,7 +76,7 @@ export default function SelectCost({route, navigation}) {
   return (
     <View style={isDarkMode ? styles.darkContainer : styles.lightContainer}>
       <Text style={isDarkMode ? styles.darkText : styles.lightText}>
-        3. Enter the total bill amount
+        2. Enter the total bill amount
       </Text>
 
       <View style={styles.inputBar}>

@@ -44,7 +44,7 @@ export default function NewBill({navigation}) {
 
   const handleNext = () => {
       console.log('NewBill Console: ',selectedNames);
-      navigation.navigate('SelectMember', { selectedNames: selectedNames });
+      navigation.navigate('SelectCost', { selectedNames: selectedNames });
   };
 
   return (
