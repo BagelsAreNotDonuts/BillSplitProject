@@ -22,7 +22,7 @@ export default function AddMember({navigation,route}) {
 
     async function insertNewMember() {
       try {
-        const query = `INSERT INTO CreditScore (score, userName) VALUES (5, '${userName}');`;
+        const query = `INSERT INTO CreditScore (score, userName) VALUES (0, '${userName}');`;
         const response = await fetch('https://second-petal-398210.ts.r.appspot.com/database', {
           method: 'POST',
           headers: {
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
       alignItems: "center"
     },
     inputField: {
-        height: deviceHeight*0.1,
+        height: deviceHeight*0.08,
         width: "89%",
         borderColor: "white",
         borderWidth: 1,

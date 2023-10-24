@@ -31,6 +31,9 @@ export default function Household() {
     const [householdMembers,sethouseholdMembers] = useState([]);
     const [refreshState,setRefreshState] = useState([false]);
     const [currentUserID, setCurrentUserID] = useState(1);
+    const [isConfirmModalVisible, setConfirmModalVisible] = useState(false);
+    const [selectedDeletionID,setSelectedDeletionID] = useState(null);
+    const [selectedDeletionName,setSelectedDeletionName] = useState(null);
 
 
     //Gets all housemate data and sets useState
@@ -58,9 +61,61 @@ export default function Household() {
     }
     }
 
+    //Deletes member from credit score depending on member
+        async function deleteFromCreditScore(id) {
+        const query = `DELETE FROM CreditScore WHERE userID = '${id}'`;
+        try {
+          const response = await fetch(
+            'https://second-petal-398210.ts.r.appspot.com/database',
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                user: 'root',
+                pass: 'root',
+                db_name: 'plutus',
+                query: query,
+              }),
+            },
+          );
+            const result = await response.json(); // I'm using json() because text() makes it not work properly?
+            await console.log(result);
+        } catch (error) {
+            console.error('Error fetching data for housemate stuff:', error);
+        }
+        }
+
+        //Deletes member from credit score depending on member
+                async function deleteFromIndividualCosts(id) {
+                const query = `DELETE * FROM IndividualCosts WHERE userID = '${id}'`;
+                try {
+                  const response = await fetch(
+                    'https://second-petal-398210.ts.r.appspot.com/database',
+                    {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify({
+                        user: 'root',
+                        pass: 'root',
+                        db_name: 'plutus',
+                        query: query,
+                      }),
+                    },
+                  );
+                    const result = await response.json(); // I'm using json() because text() makes it not work properly?
+                    await console.log(result);
+                } catch (error) {
+                    console.error('Error fetching data for housemate stuff:', error);
+                }
+                }
+
     useEffect(() => {
         getMemberData();
-        console.log(householdMembers);
+        //console.log(householdMembers);
     }, [refreshState]);
 
     function MemberItem({id}) {
@@ -79,9 +134,27 @@ export default function Household() {
         return (
         <View style={styles.householdStyles.scrollViewItem}>
             <Text style={{textAlignVertical:"center", alignItems: "center", color: 'white',
-            fontSize: deviceWidth * 0.038,}}>
+            fontSize: deviceWidth * 0.038,borderWidth: 0, borderColor: "red",width: "92%"}}>
               {name + (userID == currentUserID ? '' : '')}
             </Text>
+            <View style={{textAlignVertical:"center", alignItems: "center", color: 'white',
+            fontWeight: "bold",
+            fontSize: deviceWidth * 0.040, height: "100%",justifyContent:"center"}}>
+              <Text style = {{fontSize: deviceWidth * 0.040, fontWeight:"bold",
+              color:"white"}} onPress={async () =>
+              {
+              console.log(userID);
+              //deleteFromCreditScore(userID);
+
+              //setRefreshState(!refreshState);
+              await setSelectedDeletionID(userID);
+              await setSelectedDeletionName(name);
+              if (userID != currentUserID) {
+                setConfirmModalVisible(!isConfirmModalVisible);
+              }
+
+              }}> X</Text>
+            </View>
 
         </View>
         );
@@ -120,6 +193,46 @@ export default function Household() {
             + Add new member
           </Text>
         </TouchableOpacity>
+
+        <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={isConfirmModalVisible}
+                    onRequestClose={() => {
+                      setConfirmModalVisible(!isConfirmModalVisible)
+                    }}>
+
+                    <View style={styles.centeredView}>
+                      <View style={styles.modalView}>
+                        <Text style={styles.modalText}>
+                          Remove {selectedDeletionName} from the household?
+                        </Text>
+                        <View style={styles.buttonContainer}>
+                        <TouchableOpacity
+                            style={[styles.button, styles.buttonClose]}
+                            onPress={() =>
+                            {
+                            setConfirmModalVisible(!isConfirmModalVisible);
+                            deleteFromCreditScore(selectedDeletionID);
+                            deleteFromIndividualCosts(selectedDeletionID);
+                            setRefreshState(!refreshState);
+                            }}>
+                            <Text style={styles.textStyle}>Yes</Text>
+                        </TouchableOpacity>
+                          <TouchableOpacity
+                            style={[styles.button, styles.buttonClose]}
+                            onPress={() =>
+                            {
+                            setConfirmModalVisible(!isConfirmModalVisible);
+                            console.log(selectedDeletionID)}}>
+                            <Text style={styles.textStyle}>No</Text>
+                          </TouchableOpacity>
+
+                        </View>
+                      </View>
+                    </View>
+
+            </Modal>
     </View>
 
   );

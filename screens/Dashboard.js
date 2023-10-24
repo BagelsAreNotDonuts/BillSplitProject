@@ -11,6 +11,7 @@ import {
   ScrollView,
   Modal,
   Alert,
+  LogBox
 } from 'react-native';
 import {
   colors,
@@ -23,10 +24,14 @@ import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import {useState, useEffect} from 'react';
 import NewBill from './Create/NewBill';
 import {useNavigation} from '@react-navigation/native';
+import { useRefreshState } from '.././RefreshStateContext';
+
 
 //NOTE USE horizontal: true FOR SCROLL VIEW
 export default function Dashboard() {
   const navigation = useNavigation();
+
+  const { refreshState, toggleRefresh } = useRefreshState();
 
   const [currentUserID, setCurrentUserID] = useState(1);
   const [userCreditScore, setUserCreditScore] = useState(0);
@@ -34,7 +39,7 @@ export default function Dashboard() {
   const [userRentBillData, setUserRentBillData] = useState([]);
   const [userFoodBillData, setUserFoodBillData] = useState([]);
   const [userOtherBillData, setUserOtherBillData] = useState([]);
-  const [refreshState, setRefreshState] = useState(false);
+  //const [refreshState, setRefreshState] = useState(false);
   const [toggleShowOwe, setToggleShowOwe] = useState(true);
 
   //Gets all the housemate credit scores
@@ -179,11 +184,13 @@ export default function Dashboard() {
 //      : setUserCreditScore(currentUserData.score);
 //      console.log(userCreditScore);
   }, [currentUserID, refreshState]);
+
   console.log(
     typeof housemateCreditScoreData[0] === 'undefined'
       ? "IT'S STILL LOADING"
       : housemateCreditScoreData,
   );
+
 
   //--------------------------------VARIABLES AND ASSOCIATED FUNCTIONS----------------------------
 
@@ -397,7 +404,8 @@ export default function Dashboard() {
                 <TouchableHighlight
                     style={styles.dashboardStyles.viewBillsButton}
                     onPress={async () => {
-                                setRefreshState(!refreshState);
+                                toggleRefresh();
+                                console.log(refreshState);
                               }}>
                     <Text style={styles.dashboardStyles.viewBillsButtonText}>
                         {' '}
