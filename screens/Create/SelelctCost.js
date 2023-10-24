@@ -238,15 +238,17 @@ const styles = StyleSheet.create({
   },
   nextButton: {
     alignSelf: 'center',
-    backgroundColor: 'blue',
-    borderRadius: 25,
+    backgroundColor: "black",
+    borderWidth: 1.5,
+    borderColor: "#3A82F6",
+    borderRadius: 15,
     paddingHorizontal: 100,
     paddingVertical: 20,
     position: 'absolute',
     bottom: 20,
   },
   buttonText: {
-    color: 'white',
+    color: "#3A82F6",
     fontSize: 16,
   },
 });

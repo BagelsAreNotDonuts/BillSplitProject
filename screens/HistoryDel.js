@@ -313,14 +313,16 @@ const styles = StyleSheet.create({
     marginLeft: 10, // Add some space between the date and the cost
   },
   markAsPaidButton: {
-    backgroundColor: 'green',
+    backgroundColor: '#131313',
+    borderColor: "#3A82F6",
+    borderWidth: 1.5,
     borderRadius: 5,
     paddingVertical: 5,
     paddingHorizontal: 10,
     marginLeft: 10,
   },
   markAsPaidText: {
-    color: 'white',
+    color: '#3A82F6',
     fontSize: 14,
   },
   title: {

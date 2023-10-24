@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
   },
   nextButton: {
     alignSelf: 'center',
-    backgroundColor: 'blue',
+    backgroundColor: "#3A82F6",
     borderRadius: 25,
     paddingHorizontal: 100,
     paddingVertical: 20,

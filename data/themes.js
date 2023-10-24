@@ -355,6 +355,7 @@ export const styles = StyleSheet.create({
     createBillText: {
       color: '#3A82F6',
       fontSize: 18,
+
     },
   },
   // ...
