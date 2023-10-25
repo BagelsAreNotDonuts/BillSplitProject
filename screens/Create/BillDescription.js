@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, TextInput, StyleSheet, useColorScheme, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, ScrollView, Text, TouchableOpacity, TextInput, StyleSheet, useColorScheme, KeyboardAvoidingView, Platform } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -122,8 +122,8 @@ export default function BillDescription({ route, navigation }) {
   };
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ flex: 1 }}>
-    <View style={isDarkMode ? styles.darkContainer : styles.lightContainer}>
+    <ScrollView style={isDarkMode ? styles.darkContainer : styles.lightContainer}
+    contentContainerStyle={{flexGrow: 1}}>
       <Text style={isDarkMode ? styles.darkText : styles.lightText}>
         3. Please select appropriate category
       </Text>
@@ -187,8 +187,7 @@ export default function BillDescription({ route, navigation }) {
             <Text style={styles.buttonText}>Submit</Text>
           </TouchableOpacity>
         )}
-      </View>
-    </KeyboardAvoidingView>
+      </ScrollView>
   );
 }
 
@@ -222,6 +221,7 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     paddingRight: 45, // to account for the icon
     marginBottom: 20,
+
   },
   searchInput: {
     flex: 1,
@@ -292,8 +292,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     paddingHorizontal: 100,
     paddingVertical: 20,
-    position: 'absolute',
-    bottom: 20,
+    marginTop: "12%"
   },
   buttonText: {
     color: "#3A82F6",
