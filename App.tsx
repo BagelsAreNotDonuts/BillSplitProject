@@ -57,13 +57,13 @@ function App() {
             <Stack.Screen name="FetchDemo" component={Fetch} />
             <Stack.Screen name="InsertDemo" component={PushData} />
             <Stack.Screen name="NewBill" component={NewBill}
-            options={stackOptions("Select Who's Paying")}/>
+            options={stackOptions("Select who's paying")}/>
             <Stack.Screen name="SelectMember" component={SelectMember}
-            options={stackOptions("Select Member")}/>
+            options={stackOptions("Select member")}/>
             <Stack.Screen name="SelectCost" component={SelectCost}
-            options={stackOptions("Adjust Cost Distributions")}/>
+            options={stackOptions("Adjust cost distributions")}/>
             <Stack.Screen name="BillDescription" component={BillDescrption}
-            options={stackOptions("Create Bill Description")}/>
+            options={stackOptions("Create bill description")}/>
             <Stack.Screen name="AddMember" component={AddMember}
               options={stackOptions("Add a new member")} />
             <Stack.Screen
