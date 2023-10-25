@@ -5,6 +5,9 @@ import historyWhite from '../assets/history-white.png';
 import household from '../assets/household.png';
 import householdWhite from '../assets/household-white.png';
 import magnifyGlass from '../assets/magnifying_glass.png';
+import dashboardWhiteUnfocused from '../assets/dashboard-whiteUnfocused.png';
+import historyWhiteUnfocused from '../assets/history-whiteUnfocused.png';
+import householdWhiteUnfocused from '../assets/household-whiteUnfocused.png';
 
 export default {
     dashboard,
@@ -13,6 +16,9 @@ export default {
     historyWhite,
     household,
     householdWhite,
-    magnifyGlass
+    magnifyGlass,
+    dashboardWhiteUnfocused,
+    historyWhiteUnfocused,
+    householdWhiteUnfocused,
 };
 

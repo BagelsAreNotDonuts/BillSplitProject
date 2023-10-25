@@ -122,7 +122,7 @@ export default function BillDescription({ route, navigation }) {
   };
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ flex: 1 }}>
     <View style={isDarkMode ? styles.darkContainer : styles.lightContainer}>
       <Text style={isDarkMode ? styles.darkText : styles.lightText}>
         3. Please select appropriate category
