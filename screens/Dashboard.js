@@ -33,7 +33,7 @@ export default function Dashboard() {
 
   const { refreshState, toggleRefresh } = useRefreshState();
 
-  const [currentUserID, setCurrentUserID] = useState(1);
+  const [currentUserID, setCurrentUserID] = useState(2);
   const [userCreditScore, setUserCreditScore] = useState(0);
   const [housemateCreditScoreData, setHousemateCreditScoreData] = useState([]);
   const [userRentBillData, setUserRentBillData] = useState([]);
