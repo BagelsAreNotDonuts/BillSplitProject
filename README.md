@@ -4,6 +4,6 @@ This is a prototype developed as a group project during my time at university fo
 
 For this project, I primarily worked on the frontend development of the app, creating the styles and functionalities of screens like 'Dashboard', 'History' and 'Household'. I had also worked on secondary screens too, fixing/refining stylings and debugging.
 
-[Project design description and critique](./Miguel_Castro_-_A3_Design_Critique.pdf)
+[Project design description and critique (see appendix for screen examples)](./Miguel_Castro_-_A3_Design_Critique.pdf)
 
 
